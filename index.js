@@ -4,8 +4,10 @@ const cookieParser = require("cookie-parser");
 const db = require("./config/Database.js");
 // const Users = require("./models/UserModel.js");
 // const Mahasiswa = require("./models/MahasiswaModel.js");
+// const PengajuanProposal = require("./models/PengajuanProposalModel.js")
 const userRouter = require("./routes/users.js");
 const mahasiswaRouter = require("./routes/mahasiswa.js");
+const proposalRouter = require("./routes/pengajuanproposal.js");
 dotenv.config();
 
 const app = express();
@@ -15,6 +17,7 @@ const app = express();
         await db.authenticate();
         console.log("Database Connected");
         // await Users.sync();
+        // await PengajuanProposal.sync();
         // await Mahasiswa.sync();
     } catch (error) {
         console.log(error);
@@ -25,6 +28,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(userRouter);
 app.use(mahasiswaRouter);
+app.use(proposalRouter);
 
 
 app.listen(5000, () => {

@@ -64,8 +64,14 @@ Mahasiswa.associate = (models) => {
         foreignKey: "id_prodi",
         as: "prodi",
     });
+    Mahasiswa.hasMany(PengajuanProposal, {
+        foreignKey: "mahasiswa_id",
+        as: "pengajuan_proposals",
+    });
 };
 
 module.exports = Mahasiswa;
 
 // Sebuah mahasiswa hanya dapat terdaftar di satu prodi(relasi banyak ke satu)
+
+// Setiap mahasiswa dapat memiliki banyak pengajuan_proposal, 

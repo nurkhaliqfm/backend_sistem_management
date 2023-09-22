@@ -14,11 +14,11 @@ const PengajuanProposal = db.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    dosen_pemb: {
+    dosen_pembimbing: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    dosen_peng: {
+    dosen_penguji: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -36,4 +36,13 @@ const PengajuanProposal = db.define(
   }
 );
 
-export default PengajuanProposal;
+PengajuanProposal.associate = () => {
+  PengajuanProposal.belongsTo(Mahasiswa, {
+    foreignKey: "mahasiswa_id",
+    as: "mahasiswa"
+  });
+};
+
+module.exports = PengajuanProposal;
+
+//  setiap pengajuan_proposal hanya dapat dimiliki oleh satu mahasiswa
