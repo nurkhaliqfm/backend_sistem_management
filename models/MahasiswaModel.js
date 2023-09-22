@@ -6,6 +6,10 @@ const { DataTypes } = Sequelize;
 const Mahasiswa = db.define(
     "mahasiswa",
     {
+        id_neosia: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
         id_prodi: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -56,6 +60,12 @@ Mahasiswa.associate = (models) => {
         foreignKey: "id_user",
         as: "user",
     });
+    Mahasiswa.belongsTo(models.Prodi, {
+        foreignKey: "id_prodi",
+        as: "prodi",
+    });
 };
 
 module.exports = Mahasiswa;
+
+// Sebuah mahasiswa hanya dapat terdaftar di satu prodi(relasi banyak ke satu)
