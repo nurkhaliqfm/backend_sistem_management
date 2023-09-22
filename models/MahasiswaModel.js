@@ -52,7 +52,7 @@ const Mahasiswa = db.define(
 );
 
 Mahasiswa.associate = (models) => {
-    Mahasiswa.belongsTo(models.UserModel, {
+    Mahasiswa.belongsTo(models.Users, {
         foreignKey: "id_user",
         as: "user",
     });

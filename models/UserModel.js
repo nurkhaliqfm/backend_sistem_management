@@ -32,7 +32,7 @@ const Users = db.define(
 );
 
 Users.associate = (models) => {
-  Users.hasOne(models.MahasiswaModel, {
+  Users.hasOne(models.Mahasiswa, {
     foreignKey: "id_user",
     as: "mahasiswa",
   });
