@@ -31,6 +31,30 @@ const getAllMahasiswa = async (req, res) => {
     res.json(mahasiswaData);
 };
 
+const getPaginationMahasiswa = async (req, res) => {
+    const { page } = req.query;
+    const { id_user } = req.params;
+
+    const pageNumber = parseInt(page, 10) || 1;
+    const pageSize = 10;
+
+    const startIndex = (pageNumber - 1) * pageSize;
+
+    const mahasiswaData = await Mahasiswa.findAll({
+        where: { id_user: id_user },
+    });
+
+    const paginatedItems = mahasiswaData.slice(startIndex, startIndex + pageSize);
+
+    res.json({
+        page: pageNumber,
+        limit: pageSize,
+        totalItems: mahasiswaData.length,
+        totalPages: Math.ceil(mahasiswaData.length / pageSize),
+        item: paginatedItems,
+    });
+};
+
 const getMahasiswabyUserId = async (req, res) => {
     const { id_user } = req.params;
     try {
@@ -39,8 +63,8 @@ const getMahasiswabyUserId = async (req, res) => {
         });
 
         const prodiData = await Prodi.findOne({
-            where: { id: mahasiswaData.id_prodi }
-        })
+            where: { id: mahasiswaData.id_prodi },
+        });
 
         const data = {
             id: mahasiswaData.id,
@@ -49,11 +73,11 @@ const getMahasiswabyUserId = async (req, res) => {
             nim: mahasiswaData.nim,
             angkatan: mahasiswaData.angkatan,
             status: mahasiswaData.status,
-            pembimbing: mahasiswaData.pembimbing.split('|'),
-            penguji: mahasiswaData.penguji.split('|'),
+            pembimbing: mahasiswaData.pembimbing.split("|"),
+            penguji: mahasiswaData.penguji.split("|"),
             judul: mahasiswaData.judul,
-            mahasiwa_profile: mahasiswaData.mahasiswa_profile
-        }
+            mahasiwa_profile: mahasiswaData.mahasiswa_profile,
+        };
 
         if (!mahasiswaData) {
             return res.status(404).json({ error: "Mahasiswa not found" });
@@ -66,5 +90,9 @@ const getMahasiswabyUserId = async (req, res) => {
     }
 };
 
-module.exports = { createMahasiswa, getAllMahasiswa, getMahasiswabyUserId };
-
+module.exports = {
+    createMahasiswa,
+    getAllMahasiswa,
+    getMahasiswabyUserId,
+    getPaginationMahasiswa,
+};
