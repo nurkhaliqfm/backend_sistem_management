@@ -19,6 +19,31 @@ const createDosen = async (req, res) => {
     }
 }
 
+const getPaginationDosen = async (req, res) => {
+    const { page } = req.query;
+    const { id_user } = req.params;
+
+    const pageNumber = parseInt(page, 10) || 1;
+    const pageSize = 10;
+
+    const startIndex = (pageNumber - 1) * pageSize;
+
+    const dosenData = await Dosen.findAll({
+        where: { id_user: id_user },
+    });
+
+    const paginatedItems = dosenData.slice(startIndex, startIndex + pageSize);
+
+    res.json({
+        page: pageNumber,
+        limit: pageSize,
+        totalItems: dosenData.length,
+        totalPages: Math.ceil(dosenData.length / pageSize),
+        item: paginatedItems,
+    });
+};
+
+
 const updateDosen = async (req, res) => {
     const dosenData = req.body;
 
@@ -37,5 +62,6 @@ const updateDosen = async (req, res) => {
 
 module.exports = {
     createDosen,
+    getPaginationDosen,
     updateDosen
 }
