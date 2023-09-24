@@ -65,9 +65,14 @@ Mahasiswa.associate = (models) => {
         as: "prodi",
     });
     Mahasiswa.hasMany(PengajuanProposal, {
-        foreignKey: "mahasiswa_id",
-        as: "pengajuan_proposals",
+        foreignKey: "id_mahasiswa",
+        as: "pengajuan_proposal",
     });
+    Mahasiswa.hasMany(JadwalBimbingan, {
+        foreignKey: "id_mahasiswa",
+        as: "jadwal_bimbingan",
+    });
+
 };
 
 module.exports = Mahasiswa;

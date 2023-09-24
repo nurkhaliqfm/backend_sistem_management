@@ -38,7 +38,7 @@ const PengajuanProposal = db.define(
 
 PengajuanProposal.associate = () => {
   PengajuanProposal.belongsTo(Mahasiswa, {
-    foreignKey: "mahasiswa_id",
+    foreignKey: "id_mahasiswa",
     as: "mahasiswa"
   });
 };

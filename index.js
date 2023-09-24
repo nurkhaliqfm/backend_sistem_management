@@ -6,7 +6,8 @@ const db = require("./config/Database.js");
 // const Users = require("./models/UserModel.js");
 // const Dosen = require("./models/DosenModel.js")
 // const Mahasiswa = require("./models/MahasiswaModel.js");
-// const PengajuanProposal = require("./models/PengajuanProposalModel.js")
+// const PengajuanProposal = require("./models/PengajuanProposalModel.js");
+// const JadwalBimbingan = require("./models/JadwalBimbinganModel.js");
 
 const userRouter = require("./routes/users.js");
 const mahasiswaRouter = require("./routes/mahasiswa.js");
@@ -22,8 +23,9 @@ const app = express();
         console.log("Database Connected");
         // await Users.sync();
         // await Dosen.sync();
-        // await PengajuanProposal.sync();
         // await Mahasiswa.sync();
+        // await PengajuanProposal.sync();
+        // await JadwalBimbingan.sync();
     } catch (error) {
         console.log(error);
     }
