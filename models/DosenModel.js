@@ -36,4 +36,12 @@ const Dosen = db.define(
     }
 );
 
+Dosen.associate = (models) => {
+    Dosen.belongsTo(models.Users, {
+        foreignKey: "id_user",
+        as: "user",
+    });
+};
+
+
 module.exports = Dosen;

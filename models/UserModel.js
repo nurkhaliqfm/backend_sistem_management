@@ -36,6 +36,11 @@ Users.associate = (models) => {
     foreignKey: "id_user",
     as: "mahasiswa",
   });
+  Users.hasOne(models.Dosen, {
+    foreignKey: "id_user",
+    as: "dosen",
+  });
+
 };
 
 module.exports = Users;

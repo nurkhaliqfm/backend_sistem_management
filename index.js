@@ -2,12 +2,16 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const db = require("./config/Database.js");
+
 // const Users = require("./models/UserModel.js");
+// const Dosen = require("./models/DosenModel.js")
 // const Mahasiswa = require("./models/MahasiswaModel.js");
 // const PengajuanProposal = require("./models/PengajuanProposalModel.js")
+
 const userRouter = require("./routes/users.js");
 const mahasiswaRouter = require("./routes/mahasiswa.js");
 const proposalRouter = require("./routes/pengajuanproposal.js");
+const dosenRouter = require('./routes/dosen.js');
 dotenv.config();
 
 const app = express();
@@ -17,6 +21,7 @@ const app = express();
         await db.authenticate();
         console.log("Database Connected");
         // await Users.sync();
+        // await Dosen.sync();
         // await PengajuanProposal.sync();
         // await Mahasiswa.sync();
     } catch (error) {
@@ -29,6 +34,7 @@ app.use(express.json());
 app.use(userRouter);
 app.use(mahasiswaRouter);
 app.use(proposalRouter);
+app.use(dosenRouter);
 
 
 app.listen(5000, () => {
