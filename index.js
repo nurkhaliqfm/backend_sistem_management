@@ -13,6 +13,7 @@ const userRouter = require("./routes/users.js");
 const mahasiswaRouter = require("./routes/mahasiswa.js");
 const proposalRouter = require("./routes/pengajuanproposal.js");
 const dosenRouter = require('./routes/dosen.js');
+const jadwalBimbinganRouter = require('./routes/jadwalbimbingan.js');
 dotenv.config();
 
 const app = express();
@@ -37,6 +38,7 @@ app.use(userRouter);
 app.use(mahasiswaRouter);
 app.use(proposalRouter);
 app.use(dosenRouter);
+app.use(jadwalBimbinganRouter);
 
 
 app.listen(5000, () => {
