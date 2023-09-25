@@ -72,7 +72,10 @@ Mahasiswa.associate = (models) => {
         foreignKey: "id_mahasiswa",
         as: "jadwal_bimbingan",
     });
-
+    Mahasiswa.hasMany(models.JadwalUjian, {
+        foreignKey: "id_mahasiswa",
+        as: "jadwal_ujian",
+    });
 };
 
 module.exports = Mahasiswa;

@@ -9,6 +9,7 @@ const db = require("./config/Database.js");
 // const PengajuanProposal = require("./models/PengajuanProposalModel.js");
 // const JadwalBimbingan = require("./models/JadwalBimbinganModel.js");
 // const Notification = require('./models/Notification.js');
+// const JadwalUjian = require("./models/JadwalUjianModel.js");
 
 const userRouter = require("./routes/users.js");
 const mahasiswaRouter = require("./routes/mahasiswa.js");
@@ -16,6 +17,7 @@ const proposalRouter = require("./routes/pengajuanproposal.js");
 const dosenRouter = require('./routes/dosen.js');
 const jadwalBimbinganRouter = require('./routes/jadwalbimbingan.js');
 const notificationRouter = require('./routes/notification.js');
+const jadwalUjianRouter = require('./routes/jadwalujian.js');
 dotenv.config();
 
 const app = express();
@@ -30,6 +32,7 @@ const app = express();
         // await PengajuanProposal.sync();
         // await JadwalBimbingan.sync();
         // await Notification.sync();
+        // await JadwalUjian.sync();
     } catch (error) {
         console.log(error);
     }
@@ -43,6 +46,7 @@ app.use(proposalRouter);
 app.use(dosenRouter);
 app.use(jadwalBimbinganRouter);
 app.use(notificationRouter);
+app.use(jadwalUjianRouter);
 
 
 app.listen(5000, () => {
