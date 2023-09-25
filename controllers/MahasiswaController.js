@@ -26,10 +26,24 @@ const createMahasiswa = async (req, res) => {
 };
 
 const getAllMahasiswa = async (req, res) => {
-    const mahasiswaData = await Mahasiswa.findAll();
+    try {
+        const mahasiswaData = await Mahasiswa.findAll();
 
-    res.json(mahasiswaData);
+        const modifiedMahasiswaData = mahasiswaData.map(mahasiswa => {
+            return {
+                ...mahasiswa.dataValues,
+                pembimbing: mahasiswa.pembimbing.split("|"),
+                penguji: mahasiswa.penguji.split("|")
+            };
+        });
+
+        res.json(modifiedMahasiswaData);
+    } catch (error) {
+        console.error("Error retrieving all mahasiswa:", error);
+        res.status(500).json("Error retrieving all mahasiswa");
+    }
 };
+
 
 const getPaginationMahasiswa = async (req, res) => {
     const { page } = req.query;
@@ -44,13 +58,20 @@ const getPaginationMahasiswa = async (req, res) => {
         where: { id_user: id_user },
     });
 
-    const paginatedItems = mahasiswaData.slice(startIndex, startIndex + pageSize);
+    const modifiedMahasiswaData = mahasiswaData.map(mahasiswa => ({
+        ...mahasiswa.dataValues,
+        pembimbing: mahasiswa.pembimbing ? mahasiswa.pembimbing.split("|") : [],
+        penguji: mahasiswa.penguji ? mahasiswa.penguji.split("|") : []
+    }));
+
+
+    const paginatedItems = modifiedMahasiswaData.slice(startIndex, startIndex + pageSize);
 
     res.json({
         page: pageNumber,
         limit: pageSize,
-        totalItems: mahasiswaData.length,
-        totalPages: Math.ceil(mahasiswaData.length / pageSize),
+        totalItems: modifiedMahasiswaData.length,
+        totalPages: Math.ceil(modifiedMahasiswaData.length / pageSize),
         item: paginatedItems,
     });
 };
