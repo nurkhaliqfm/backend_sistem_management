@@ -15,11 +15,11 @@ const PengajuanProposal = db.define(
       allowNull: false,
     },
     dosen_pembimbing: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     dosen_penguji: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     document: {
@@ -27,7 +27,7 @@ const PengajuanProposal = db.define(
       allowNull: true,
     },
     status: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   },

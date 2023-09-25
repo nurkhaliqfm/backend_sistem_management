@@ -14,40 +14,40 @@ const getUsers = async (req, res) => {
   }
 };
 
-// const Register = async (req, res) => {
-//   try {
-//     const { username, password, role } = req.body;
+const Register = async (req, res) => {
+  try {
+    const { username, password, role } = req.body;
 
-//     if (!username || !password || !role) {
-//       return res.status(400).json({ msg: "Username dan password diperlukan." });
-//     }
+    if (!username || !password || !role) {
+      return res.status(400).json({ msg: "Username dan password diperlukan." });
+    }
 
-//     const existingUser = await Users.findOne({
-//       where: {
-//         username: username,
-//       },
-//     });
+    const existingUser = await Users.findOne({
+      where: {
+        username: username,
+      },
+    });
 
-//     if (existingUser) {
-//       return res.status(400).json({ msg: "Username sudah ada." });
-//     }
+    if (existingUser) {
+      return res.status(400).json({ msg: "Username sudah ada." });
+    }
 
-//     // Hash password
-//     const salt = await bcrypt.genSalt(10);
-//     const hashedPassword = await bcrypt.hash(password, salt);
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-//     const newUser = await Users.create({
-//       username: username,
-//       password: hashedPassword,
-//       role: role,
-//     });
+    const newUser = await Users.create({
+      username: username,
+      password: hashedPassword,
+      role: role,
+    });
 
-//     return res.status(201).json({ msg: "Pengguna berhasil didaftarkan." });
-//   } catch (error) {
-//     console.error("Error saat proses registrasi:", error);
-//     return res.status(500).json({ msg: "Terjadi kesalahan saat registrasi" });
-//   }
-// };
+    return res.status(201).json({ msg: "Pengguna berhasil didaftarkan." });
+  } catch (error) {
+    console.error("Error saat proses registrasi:", error);
+    return res.status(500).json({ msg: "Terjadi kesalahan saat registrasi" });
+  }
+};
 
 const Login = async (req, res) => {
   try {
@@ -137,4 +137,4 @@ const Logout = async (req, res) => {
 }
 
 
-module.exports = { getUsers, Login, Logout };
+module.exports = { getUsers, Login, Logout, Register };
