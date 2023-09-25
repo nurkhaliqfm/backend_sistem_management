@@ -40,6 +40,14 @@ Users.associate = (models) => {
     foreignKey: "id_user",
     as: "dosen",
   });
+  Users.hasMany(models.Notification, {
+    foreignKey: "id_user_from",
+    as: "notificationsFrom",
+  });
+  Users.hasMany(models.Notification, {
+    foreignKey: "id_user_to",
+    as: "notificationsTo",
+  });
 
 };
 
