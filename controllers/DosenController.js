@@ -1,4 +1,6 @@
 const Dosen = require("../models/DosenModel.js");
+const { Op } = require('sequelize');
+
 
 const createDosen = async (req, res) => {
     const dosenData = req.body;
@@ -44,27 +46,47 @@ const getDosenByUserId = async (req, res) => {
 };
 
 const getPaginationDosen = async (req, res) => {
-    const { page } = req.query;
+    const { page, search } = req.query;
     const { id_user } = req.params;
 
     const pageNumber = parseInt(page, 10) || 1;
     const pageSize = 10;
-
     const startIndex = (pageNumber - 1) * pageSize;
 
-    const dosenData = await Dosen.findAll({
-        where: { id_user: id_user },
-    });
+    const whereCondition = {
+        id_user: id_user,
+    };
 
-    const paginatedItems = dosenData.slice(startIndex, startIndex + pageSize);
+    // Menambahkan kondisi pencarian berdasarkan nama dosen
+    if (search) {
+        whereCondition.nama_dosen = {
+            [Op.like]: `%${search}%`
+        };
+    }
 
-    res.json({
-        page: pageNumber,
-        limit: pageSize,
-        totalItems: dosenData.length,
-        totalPages: Math.ceil(dosenData.length / pageSize),
-        item: paginatedItems,
-    });
+    try {
+        const totalCount = await Dosen.count({
+            where: whereCondition,
+        });
+
+        const dosenData = await Dosen.findAll({
+            where: whereCondition,
+            offset: startIndex,
+            limit: pageSize,
+        });
+
+        res.json({
+            data: dosenData,
+            page: pageNumber,
+            per_page: pageSize,
+            limit: pageSize,
+            totalItems: totalCount,
+            totalPages: Math.ceil(totalCount / pageSize),
+        });
+    } catch (error) {
+        console.error("Error retrieving paginated dosen:", error);
+        res.status(500).json("Error retrieving paginated dosen");
+    }
 };
 
 const updateDosen = async (req, res) => {
