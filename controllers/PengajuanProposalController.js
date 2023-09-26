@@ -22,6 +22,16 @@ const createProposal = async (req, res) => {
     }
 }
 
+const getAllPengajuanProposal = async (req, res) => {
+    try {
+        const pengajuanProposalData = await PengajuanProposal.findAll();
+        res.json(pengajuanProposalData)
+    } catch (error) {
+        console.error("Kesalahan saat mengambil semua pengajuan proposal:", error);
+        res.status(500).json("Kesalahan saat mengambil semua pengajuan proposal");
+    }
+}
+
 const updateProposal = async (req, res) => {
     const proposalData = req.body;
     const proposalId = req.params.id;
@@ -51,4 +61,4 @@ const updateProposal = async (req, res) => {
 }
 
 
-module.exports = { createProposal, updateProposal };
+module.exports = { createProposal, getAllPengajuanProposal, updateProposal };
