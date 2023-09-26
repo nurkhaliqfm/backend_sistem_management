@@ -22,7 +22,7 @@ const createProposal = async (req, res) => {
     }
 }
 
-const getAllPengajuanProposal = async (req, res) => {
+const getAllProposal = async (req, res) => {
     try {
         const pengajuanProposalData = await PengajuanProposal.findAll();
         res.json(pengajuanProposalData)
@@ -61,4 +61,4 @@ const updateProposal = async (req, res) => {
 }
 
 
-module.exports = { createProposal, getAllPengajuanProposal, updateProposal };
+module.exports = { createProposal, getAllProposal, updateProposal };

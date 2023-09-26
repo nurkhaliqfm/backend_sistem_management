@@ -1,5 +1,5 @@
 const express = require("express");
-const { createProposal, updateProposal, getAllPengajuanProposal } = require("../controllers/PengajuanProposalController.js")
+const { createProposal, updateProposal, getAllProposal } = require("../controllers/PengajuanProposalController.js")
 const router = express.Router();
 
 const multer = require("multer");
@@ -33,7 +33,7 @@ const upload = multer({
 
 
 router.post("/proposals", upload.single('document'), createProposal);
-router.get("/proposals", upload.single('document'), getAllPengajuanProposal);
+router.get("/proposals", upload.single('document'), getAllProposal);
 router.patch("/proposals/:id", upload.single('document'), updateProposal);
 
 module.exports = router;
