@@ -14,23 +14,23 @@ const createProposal = async (req, res) => {
             document: fileName[1],
             status: proposalData.status,
             id_mahasiswa: proposalData.id_mahasiswa,
-        })
+        });
         res.json("success");
     } catch (error) {
         console.error("Error creating proposal:", error);
         res.status(500).json("Error creating proposal");
     }
-}
+};
 
 const getAllProposal = async (req, res) => {
     try {
         const pengajuanProposalData = await PengajuanProposal.findAll();
-        res.json(pengajuanProposalData)
+        res.json(pengajuanProposalData);
     } catch (error) {
         console.error("Kesalahan saat mengambil semua pengajuan proposal:", error);
         res.status(500).json("Kesalahan saat mengambil semua pengajuan proposal");
     }
-}
+};
 
 const updateProposal = async (req, res) => {
     const proposalData = req.body;
@@ -49,8 +49,8 @@ const updateProposal = async (req, res) => {
 
         await PengajuanProposal.update(proposalData, {
             where: {
-                id: proposalId
-            }
+                id: proposalId,
+            },
         });
 
         res.json("Proposal updated successfully");
@@ -58,7 +58,6 @@ const updateProposal = async (req, res) => {
         console.error("Error updating proposal:", error);
         res.status(500).json("Error updating proposal");
     }
-}
-
+};
 
 module.exports = { createProposal, getAllProposal, updateProposal };

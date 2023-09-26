@@ -10,14 +10,14 @@ const createDosen = async (req, res) => {
             dosen_type: dosenData.dosen_type,
             dosen_profile: dosenData.dosen_profile,
             id_prodi: dosenData.id_prodi,
-            id_user: dosenData.id_user
+            id_user: dosenData.id_user,
         });
         res.json("success");
     } catch (error) {
         console.error("Error creating dosen:", error);
         res.status(500).json("Error creating dosen");
     }
-}
+};
 
 const getAllDosen = async (req, res) => {
     const dosenData = await Dosen.findAll();
@@ -30,7 +30,7 @@ const getDosenByUserId = async (req, res) => {
 
     try {
         const dosenData = await Dosen.findOne({
-            where: { id_user: id_user }
+            where: { id_user: id_user },
         });
 
         if (!dosenData) {
@@ -41,8 +41,7 @@ const getDosenByUserId = async (req, res) => {
         console.error("Error retrieving dosen by user ID:", error);
         res.status(500).json("Error retrieving dosen");
     }
-}
-
+};
 
 const getPaginationDosen = async (req, res) => {
     const { page } = req.query;
@@ -68,27 +67,26 @@ const getPaginationDosen = async (req, res) => {
     });
 };
 
-
 const updateDosen = async (req, res) => {
     const dosenData = req.body;
 
     try {
         await Dosen.update(dosenData, {
             where: {
-                id: req.params.id
-            }
+                id: req.params.id,
+            },
         });
         res.json("Data dosen berhasil di-update.");
     } catch (error) {
         console.error("Error updating dosen:", error);
         res.status(500).json("Error updating dosen");
     }
-}
+};
 
 module.exports = {
     createDosen,
     getAllDosen,
     getDosenByUserId,
     getPaginationDosen,
-    updateDosen
-}
+    updateDosen,
+};

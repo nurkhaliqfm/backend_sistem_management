@@ -1,8 +1,12 @@
 const express = require("express");
-const { Login, getUsers, Logout, Register } = require("../controllers/Users.js");
+const {
+    Login,
+    getUsers,
+    Logout,
+    Register,
+} = require("../controllers/Users.js");
 const { verifyToken } = require("../middleware/VerifyToken.js");
 const { refreshToken } = require("../controllers/RefreshToken.js");
-
 
 const router = express.Router();
 
@@ -13,4 +17,3 @@ router.get("/token", refreshToken);
 router.delete("/logout", Logout);
 
 module.exports = router;
-

@@ -9,13 +9,13 @@ const createJadwalBimbingan = async (req, res) => {
             status: jadwalBimbinganData.status,
             id_mahasiswa: jadwalBimbinganData.id_mahasiswa,
             id_dosen: jadwalBimbinganData.id_dosen,
-        })
+        });
         res.json("success");
     } catch (error) {
         console.error("Error creating jadwal bimbingan:", error);
         res.status(500).json("Error creating jadwal bimbingan");
     }
-}
+};
 
 const getAllJadwalBimbingan = async (req, res) => {
     try {
@@ -25,7 +25,7 @@ const getAllJadwalBimbingan = async (req, res) => {
         console.error("Kesalahan saat mengambil semua jadwal bimbingan:", error);
         res.status(500).json("Kesalahan saat mengambil semua jadwal bimbingan");
     }
-}
+};
 
 const updateJadwalBimbingan = async (req, res) => {
     const jadwalBimbinganData = req.body;
@@ -33,18 +33,18 @@ const updateJadwalBimbingan = async (req, res) => {
     try {
         await JadwalBimbingan.update(jadwalBimbinganData, {
             where: {
-                id: req.params.id
-            }
-        })
+                id: req.params.id,
+            },
+        });
         res.json("Data jadwal berhasil di-update.");
     } catch (error) {
         console.error("Error updating jadwal:", error);
         res.status(500).json("Error updating jadwal");
     }
-}
+};
 
 module.exports = {
     createJadwalBimbingan,
     getAllJadwalBimbingan,
-    updateJadwalBimbingan
-}
+    updateJadwalBimbingan,
+};

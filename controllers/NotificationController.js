@@ -1,4 +1,4 @@
-const Notification = require('../models/NotificationModel.js');
+const Notification = require("../models/NotificationModel.js");
 
 const createNotification = async (req, res) => {
     const notificationData = req.body;
@@ -9,12 +9,12 @@ const createNotification = async (req, res) => {
             date: notificationData.date,
             id_user_from: notificationData.id_user_from,
             id_user_to: notificationData.id_user_to,
-        })
+        });
     } catch (error) {
         console.error("Error creating notification:", error);
         res.status(500).json("Error creating notification");
     }
-}
+};
 
 const getAllNotification = async (req, res) => {
     try {
@@ -24,7 +24,7 @@ const getAllNotification = async (req, res) => {
         console.error("Kesalahan saat mengambil notification:", error);
         res.status(500).json("Kesalahan saat mengambil notification");
     }
-}
+};
 
 const updateNotification = async (req, res) => {
     const notificationData = req.body;
@@ -32,18 +32,18 @@ const updateNotification = async (req, res) => {
     try {
         await Notification.update(notificationData, {
             where: {
-                id: req.params.id
-            }
-        })
+                id: req.params.id,
+            },
+        });
         res.json("Data notification berhasil di-update.");
     } catch (error) {
         console.error("Error updating notification:", error);
         res.status(500).json("Error updating notification");
     }
-}
+};
 
 module.exports = {
     createNotification,
     getAllNotification,
     updateNotification,
-}
+};

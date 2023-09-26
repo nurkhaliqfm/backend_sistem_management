@@ -1,5 +1,9 @@
-const express = require('express');
-const { createJadwalUjian, updateJadwalUjian, getAllJadwalUjian } = require('../controllers/JadwalUjianController.js');
+const express = require("express");
+const {
+    createJadwalUjian,
+    updateJadwalUjian,
+    getAllJadwalUjian,
+} = require("../controllers/JadwalUjianController.js");
 
 const router = express.Router();
 

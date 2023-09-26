@@ -2,7 +2,6 @@ const Users = require("../models/UserModel.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-
 const getUsers = async (req, res) => {
   try {
     const users = await Users.findAll({
@@ -115,7 +114,8 @@ const Login = async (req, res) => {
 const Logout = async (req, res) => {
   const refreshToken = req.cookies.jwt;
 
-  if (!refreshToken) return res.status(401).json({ msg: "Tidak ada token yang diberikan." });
+  if (!refreshToken)
+    return res.status(401).json({ msg: "Tidak ada token yang diberikan." });
 
   const user = await Users.findOne({
     where: {
@@ -125,16 +125,18 @@ const Logout = async (req, res) => {
 
   if (!user) return res.status(400).json({ msg: "Token tidak valid." });
 
-  await Users.update({ refresh_token: null }, {
-    where: {
-      id: user.id,
+  await Users.update(
+    { refresh_token: null },
+    {
+      where: {
+        id: user.id,
+      },
     }
-  });
+  );
 
-  res.clearCookie('jwt');
+  res.clearCookie("jwt");
 
   return res.status(200).json({ msg: "Berhasil logout." });
-}
-
+};
 
 module.exports = { getUsers, Login, Logout, Register };

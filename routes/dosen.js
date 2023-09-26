@@ -4,7 +4,7 @@ const {
     getAllDosen,
     getDosenByUserId,
     getPaginationDosen,
-    updateDosen
+    updateDosen,
 } = require("../controllers/DosenController.js");
 
 const router = express.Router();
