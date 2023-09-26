@@ -39,14 +39,14 @@ const getPaginationNotification = async (req, res) => {
             where: { id_user_to: id_user_to }
         });
 
-        const notifications = await Notification.findAll({
+        const notificationData = await Notification.findAll({
             where: { id_user_to: id_user_to },
             offset: startIndex,
             limit: pageSize,
         });
 
         res.json({
-            data: notifications,
+            data: notificationData,
             page: pageNumber,
             per_page: pageSize,
             totalItems: totalCount,
