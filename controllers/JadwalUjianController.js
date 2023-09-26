@@ -15,6 +15,16 @@ const createJadwalUjian = async (req, res) => {
     }
 }
 
+const getAllJadwalUjian = async (req, res) => {
+    try {
+        const jadwalUjianData = await JadwalUjian.findAll();
+        res.json(jadwalUjianData);
+    } catch (error) {
+        console.error("Kesalahan saat mengambil semua jadwal ujian:", error);
+        res.status(500).json("Kesalahan saat mengambil semua jadwal ujian");
+    }
+}
+
 const updateJadwalUjian = async (req, res) => {
     const jadwalUjianData = req.body;
 
@@ -33,5 +43,6 @@ const updateJadwalUjian = async (req, res) => {
 
 module.exports = {
     createJadwalUjian,
+    getAllJadwalUjian,
     updateJadwalUjian
 }
