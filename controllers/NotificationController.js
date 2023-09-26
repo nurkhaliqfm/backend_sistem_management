@@ -26,6 +26,39 @@ const getAllNotification = async (req, res) => {
     }
 };
 
+const getPaginationNotification = async (req, res) => {
+    const { page } = req.query;
+    const { id_user_to } = req.params;
+
+    const pageNumber = parseInt(page, 10) || 1;
+    const pageSize = 10;
+    const startIndex = (pageNumber - 1) * pageSize;
+
+    try {
+        const totalCount = await Notification.count({
+            where: { id_user_to: id_user_to }
+        });
+
+        const notifications = await Notification.findAll({
+            where: { id_user_to: id_user_to },
+            offset: startIndex,
+            limit: pageSize,
+        });
+
+        res.json({
+            data: notifications,
+            page: pageNumber,
+            per_page: pageSize,
+            totalItems: totalCount,
+            totalPages: Math.ceil(totalCount / pageSize),
+        });
+    } catch (error) {
+        console.error("Error retrieving paginated notifications:", error);
+        res.status(500).json("Error retrieving paginated notifications");
+    }
+};
+
+
 const updateNotification = async (req, res) => {
     const notificationData = req.body;
 
@@ -45,5 +78,6 @@ const updateNotification = async (req, res) => {
 module.exports = {
     createNotification,
     getAllNotification,
+    getPaginationNotification,
     updateNotification,
 };
