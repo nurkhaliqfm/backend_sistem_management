@@ -16,6 +16,16 @@ const createNotification = async (req, res) => {
     }
 }
 
+const getAllNotification = async (req, res) => {
+    try {
+        const notificationData = await Notification.findAll();
+        res.json(notificationData);
+    } catch (error) {
+        console.error("Kesalahan saat mengambil notification:", error);
+        res.status(500).json("Kesalahan saat mengambil notification");
+    }
+}
+
 const updateNotification = async (req, res) => {
     const notificationData = req.body;
 
@@ -34,5 +44,6 @@ const updateNotification = async (req, res) => {
 
 module.exports = {
     createNotification,
+    getAllNotification,
     updateNotification,
 }
