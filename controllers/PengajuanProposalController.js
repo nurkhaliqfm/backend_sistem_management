@@ -4,12 +4,14 @@ const createProposal = async (req, res) => {
     const proposalData = req.body;
     console.log(req.file);
 
+    const fileName = req.file.path.split(/\\/g);
+
     try {
         await PengajuanProposal.create({
             judul: proposalData.judul,
             dosen_pembimbing: proposalData.dosen_pembimbing,
             dosen_penguji: proposalData.dosen_penguji,
-            document: req.file.path,
+            document: fileName[1],
             status: proposalData.status,
             id_mahasiswa: proposalData.id_mahasiswa,
         })
@@ -22,7 +24,7 @@ const createProposal = async (req, res) => {
 
 const updateProposal = async (req, res) => {
     const proposalData = req.body;
-    const proposalId = req.params.id; // Misalkan Anda menggunakan ID proposal di URL
+    const proposalId = req.params.id;
 
     try {
         const existingProposal = await PengajuanProposal.findByPk(proposalId);

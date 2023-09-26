@@ -8,9 +8,9 @@ const {
 
 const router = express.Router();
 
-router.get("/", getAllMahasiswa);
-router.get("/pagination/:id_user", getPaginationMahasiswa);
-router.get("/:id_user", getMahasiswabyUserId);
-router.post("/create", createMahasiswa);
+router.get("/mahasiswa", getAllMahasiswa);
+router.get("/mahasiswa/pagination/:id_user", getPaginationMahasiswa);
+router.get("/mahasiswa/:id_user", getMahasiswabyUserId);
+router.post("/mahasiswa/create", createMahasiswa);
 
 module.exports = router;

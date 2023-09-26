@@ -25,18 +25,38 @@ const createMahasiswa = async (req, res) => {
     }
 };
 
+// const getAllMahasiswa = async (req, res) => {
+//     try {
+//         const mahasiswaData = await Mahasiswa.findAll();
+
+//         const modifiedMahasiswaData = mahasiswaData.map(mahasiswa => {
+//             return {
+//                 ...mahasiswa.dataValues,
+//                 pembimbing: mahasiswa.pembimbing.split("|"),
+//                 penguji: mahasiswa.penguji.split("|")
+//             };
+//         });
+
+//         res.json(modifiedMahasiswaData);
+//     } catch (error) {
+//         console.error("Error retrieving all mahasiswa:", error);
+//         res.status(500).json("Error retrieving all mahasiswa");
+//     }
+// };
+
 const getAllMahasiswa = async (req, res) => {
     try {
         const mahasiswaData = await Mahasiswa.findAll();
 
-        const modifiedMahasiswaData = mahasiswaData.map(mahasiswa => {
+        const modifiedMahasiswaData = await Promise.all(mahasiswaData.map(async mahasiswa => {
+            const prodi = await Prodi.findOne({ where: { id: mahasiswa.id_prodi } });
             return {
                 ...mahasiswa.dataValues,
+                nama_prodi: prodi ? prodi.nama_resmi : "N/A",
                 pembimbing: mahasiswa.pembimbing.split("|"),
                 penguji: mahasiswa.penguji.split("|")
             };
-        });
-
+        }));
         res.json(modifiedMahasiswaData);
     } catch (error) {
         console.error("Error retrieving all mahasiswa:", error);
@@ -51,30 +71,38 @@ const getPaginationMahasiswa = async (req, res) => {
 
     const pageNumber = parseInt(page, 10) || 1;
     const pageSize = 10;
-
     const startIndex = (pageNumber - 1) * pageSize;
 
-    const mahasiswaData = await Mahasiswa.findAll({
-        where: { id_user: id_user },
-    });
+    try {
+        const mahasiswaData = await Mahasiswa.findAll({
+            where: { id_user: id_user },
+        });
 
-    const modifiedMahasiswaData = mahasiswaData.map(mahasiswa => ({
-        ...mahasiswa.dataValues,
-        pembimbing: mahasiswa.pembimbing ? mahasiswa.pembimbing.split("|") : [],
-        penguji: mahasiswa.penguji ? mahasiswa.penguji.split("|") : []
-    }));
+        const modifiedMahasiswaData = await Promise.all(mahasiswaData.map(async mahasiswa => {
+            const prodi = await Prodi.findOne({ where: { id: mahasiswa.id_prodi } });
+            return {
+                ...mahasiswa.dataValues,
+                nama_prodi: prodi ? prodi.nama_resmi : "N/A",
+                pembimbing: mahasiswa.pembimbing.split("|"),
+                penguji: mahasiswa.penguji.split("|")
+            };
+        }));
 
+        const paginatedItems = modifiedMahasiswaData.slice(startIndex, startIndex + pageSize);
 
-    const paginatedItems = modifiedMahasiswaData.slice(startIndex, startIndex + pageSize);
-
-    res.json({
-        page: pageNumber,
-        limit: pageSize,
-        totalItems: modifiedMahasiswaData.length,
-        totalPages: Math.ceil(modifiedMahasiswaData.length / pageSize),
-        item: paginatedItems,
-    });
+        res.json({
+            page: pageNumber,
+            limit: pageSize,
+            totalItems: modifiedMahasiswaData.length,
+            totalPages: Math.ceil(modifiedMahasiswaData.length / pageSize),
+            items: paginatedItems,
+        });
+    } catch (error) {
+        console.error("Error retrieving paginated mahasiswa:", error);
+        res.status(500).json("Error retrieving paginated mahasiswa");
+    }
 };
+
 
 const getMahasiswabyUserId = async (req, res) => {
     const { id_user } = req.params;
@@ -83,13 +111,17 @@ const getMahasiswabyUserId = async (req, res) => {
             where: { id_user: id_user },
         });
 
+        if (!mahasiswaData) {
+            return res.status(404).json({ error: "Mahasiswa not found" });
+        }
+
         const prodiData = await Prodi.findOne({
             where: { id: mahasiswaData.id_prodi },
         });
 
         const data = {
             id: mahasiswaData.id,
-            nama_prodi: prodiData.nama_resmi,
+            nama_prodi: prodiData ? prodiData.nama_resmi : "N/A",
             nama_mahasiswa: mahasiswaData.nama_mahasiswa,
             nim: mahasiswaData.nim,
             angkatan: mahasiswaData.angkatan,
@@ -100,16 +132,13 @@ const getMahasiswabyUserId = async (req, res) => {
             mahasiwa_profile: mahasiswaData.mahasiswa_profile,
         };
 
-        if (!mahasiswaData) {
-            return res.status(404).json({ error: "Mahasiswa not found" });
-        }
-
         res.json(data);
     } catch (error) {
         console.error("Error retrieving mahasiswa by user ID:", error);
         res.status(500).json("Error retrieving mahasiswa");
     }
 };
+
 
 module.exports = {
     createMahasiswa,

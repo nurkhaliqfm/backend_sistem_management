@@ -19,6 +19,31 @@ const createDosen = async (req, res) => {
     }
 }
 
+const getAllDosen = async (req, res) => {
+    const dosenData = await Dosen.findAll();
+
+    res.json(dosenData);
+};
+
+const getDosenByUserId = async (req, res) => {
+    const { id_user } = req.params;
+
+    try {
+        const dosenData = await Dosen.findOne({
+            where: { id_user: id_user }
+        });
+
+        if (!dosenData) {
+            return res.status(404).json({ error: "Dosen not found" });
+        }
+        res.json(dosenData);
+    } catch (error) {
+        console.error("Error retrieving dosen by user ID:", error);
+        res.status(500).json("Error retrieving dosen");
+    }
+}
+
+
 const getPaginationDosen = async (req, res) => {
     const { page } = req.query;
     const { id_user } = req.params;
@@ -62,6 +87,8 @@ const updateDosen = async (req, res) => {
 
 module.exports = {
     createDosen,
+    getAllDosen,
+    getDosenByUserId,
     getPaginationDosen,
     updateDosen
 }

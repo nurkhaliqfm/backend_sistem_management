@@ -31,6 +31,7 @@ const upload = multer({
     }
 });
 
+
 router.post("/proposals", upload.single('document'), createProposal);
 router.patch("/proposals/:id", upload.single('document'), updateProposal);
 

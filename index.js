@@ -18,6 +18,7 @@ const dosenRouter = require('./routes/dosen.js');
 const jadwalBimbinganRouter = require('./routes/jadwalbimbingan.js');
 const notificationRouter = require('./routes/notification.js');
 const jadwalUjianRouter = require('./routes/jadwalujian.js');
+const getDocument = require('./routes/getDocument.js');
 dotenv.config();
 
 const app = express();
@@ -47,6 +48,7 @@ app.use(dosenRouter);
 app.use(jadwalBimbinganRouter);
 app.use(notificationRouter);
 app.use(jadwalUjianRouter);
+app.use(getDocument);
 
 
 app.listen(5000, () => {
