@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-    createProposal,
+    createOrUpdateProposal,
     updateProposal,
     getAllProposal,
     getPaginationProposal,
@@ -37,10 +37,10 @@ const upload = multer({
     },
 });
 
-router.post("/proposals", upload.single("document"), createProposal);
-router.get("/proposals", upload.single("document"), getAllProposal);
+router.post("/proposal", upload.single("document"), createOrUpdateProposal);
+router.get("/proposal", upload.single("document"), getAllProposal);
 router.get('/proposal/pagination', getPaginationProposal);
 router.get('/proposal/:id_mahasiswa', getProposalByMahasiswaId);
-router.patch("/proposals/:id", upload.single("document"), updateProposal);
+router.patch("/proposal/:id", upload.single("document"), updateProposal);
 
 module.exports = router;

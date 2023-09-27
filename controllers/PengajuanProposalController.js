@@ -2,24 +2,46 @@ const PengajuanProposal = require("../models/PengajuanProposalModel.js");
 const fs = require("fs");
 const path = require("path");
 
-const createProposal = async (req, res) => {
+const createOrUpdateProposal = async (req, res) => {
     const proposalData = req.body;
-    console.log(req.file);
 
     try {
-        await PengajuanProposal.create({
-            judul: proposalData.judul,
-            dosen_pembimbing: proposalData.dosen_pembimbing,
-            dosen_penguji: proposalData.dosen_penguji,
-            document: req.file.filename,
-            status: proposalData.status,
-            id_mahasiswa: proposalData.id_mahasiswa,
+        // Cek apakah mahasiswa sudah mengajukan proposal sebelumnya
+        const existingProposal = await PengajuanProposal.findOne({
+            where: { id_mahasiswa: proposalData.id_mahasiswa }
         });
-        res.json("success");
+
+        if (existingProposal) {
+            // Jika proposal sudah ada, perbarui proposal tersebut
+            if (req.file) {
+                // Hapus file lama sebelum mengganti dengan file baru
+                const oldFilePath = path.join(__dirname, '..', 'assets', existingProposal.document);
+                if (fs.existsSync(oldFilePath)) {
+                    fs.unlinkSync(oldFilePath);
+                }
+
+                // Set filename dari file yang baru di-upload
+                proposalData.document = req.file.filename;
+            }
+
+            await PengajuanProposal.update(proposalData, {
+                where: { id_mahasiswa: proposalData.id_mahasiswa }
+            });
+
+            res.json("Proposal updated successfully");
+        } else {
+            // Jika belum ada proposal, buat proposal baru
+            if (req.file) {
+                proposalData.document = req.file.filename;
+            }
+
+            await PengajuanProposal.create(proposalData);
+            res.json("Proposal created successfully");
+        }
     } catch (error) {
-        console.error("Error creating proposal:", error);
-        res.status(50).json("Error creating proposal");
-    };
+        console.error("Error processing proposal:", error);
+        res.status(500).json("Error processing proposal");
+    }
 };
 
 const getAllProposal = async (req, res) => {
@@ -106,7 +128,7 @@ const updateProposal = async (req, res) => {
 };
 
 module.exports = {
-    createProposal,
+    createOrUpdateProposal,
     getAllProposal,
     getProposalByMahasiswaId,
     getPaginationProposal,
