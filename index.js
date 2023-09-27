@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const db = require("./config/Database.js");
+const cors = require('cors');
 
 // const Users = require("./models/UserModel.js");
 // const Dosen = require("./models/DosenModel.js")
@@ -41,6 +42,7 @@ const app = express();
 
 app.use(cookieParser());
 app.use(express.json());
+app.use(cors());
 app.use(userRouter);
 app.use(mahasiswaRouter);
 app.use(proposalRouter);
