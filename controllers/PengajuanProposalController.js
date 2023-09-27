@@ -19,8 +19,7 @@ const createProposal = async (req, res) => {
     } catch (error) {
         console.error("Error creating proposal:", error);
         res.status(50).json("Error creating proposal");
-    }
-    0;
+    };
 };
 
 const getAllProposal = async (req, res) => {
