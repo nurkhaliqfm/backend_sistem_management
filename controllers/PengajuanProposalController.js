@@ -42,7 +42,7 @@ const getProposalByMahasiswaId = async (req, res) => {
         if (!pengajuanProposalData) {
             return res.status(404).json({ error: "Dosen not found" });
         }
-        res.json(pengajuanProposalData);
+        res.json({ item: pengajuanProposalData });
     } catch (error) {
         console.error("Error retrieving proposal by user id mahasiswa:", error);
         res.status(500).json("Error retrieving proposal");
