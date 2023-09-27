@@ -96,7 +96,7 @@ const getPaginationMahasiswa = async (req, res) => {
         );
 
         res.json({
-            data: modifiedMahasiswaData,
+            item: modifiedMahasiswaData,
             page: pageNumber,
             per_page: pageSize,
             total_items: totalCount,

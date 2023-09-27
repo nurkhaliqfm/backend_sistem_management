@@ -73,7 +73,7 @@ const getPaginationDosen = async (req, res) => {
         });
 
         res.json({
-            data: dosenData,
+            item: dosenData,
             page: pageNumber,
             per_page: pageSize,
             limit: pageSize,

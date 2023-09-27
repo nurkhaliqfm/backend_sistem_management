@@ -46,7 +46,7 @@ const getPaginationNotification = async (req, res) => {
         });
 
         res.json({
-            data: notificationData,
+            item: notificationData,
             page: pageNumber,
             per_page: pageSize,
             totalItems: totalCount,

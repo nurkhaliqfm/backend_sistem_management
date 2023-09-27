@@ -1,4 +1,6 @@
 const PengajuanProposal = require("../models/PengajuanProposalModel.js");
+const fs = require("fs");
+const path = require('path')
 
 const createProposal = async (req, res) => {
     const proposalData = req.body;
@@ -19,13 +21,6 @@ const createProposal = async (req, res) => {
         res.status(500).json("Error creating proposal");
     }
 };
-//ngecek dia sudah ajukan proposal atau belum kalau sudah dia update
-
-//pertama cek proposal by id mhs,
-//kalau tidak brrti create kalau ada brrti update,
-//sebelum di hapus update dulu datanya 
-//kemudian kalau update cek file yang lama untuk di hapus kalau ada nda di hapus
-
 
 const getAllProposal = async (req, res) => {
     try {
@@ -57,7 +52,7 @@ const getPaginationProposal = async (req, res) => {
         });
 
         res.json({
-            data: pengajuanProposalData,
+            item: pengajuanProposalData,
             page: pageNumber,
             per_page: pageSize,
             totalItems: totalCount,
