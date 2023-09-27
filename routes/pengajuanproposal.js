@@ -3,7 +3,8 @@ const {
     createProposal,
     updateProposal,
     getAllProposal,
-    getPaginationProposal
+    getPaginationProposal,
+    getProposalByMahasiswaId
 } = require("../controllers/PengajuanProposalController.js");
 const router = express.Router();
 
@@ -38,7 +39,8 @@ const upload = multer({
 
 router.post("/proposals", upload.single("document"), createProposal);
 router.get("/proposals", upload.single("document"), getAllProposal);
-router.get('/proposal/pagination/:id_mahasiswa', getPaginationProposal);
+router.get('/proposal/pagination', getPaginationProposal);
+router.get('/proposal/:id_mahasiswa', getProposalByMahasiswaId);
 router.patch("/proposals/:id", upload.single("document"), updateProposal);
 
 module.exports = router;

@@ -1,6 +1,6 @@
 const PengajuanProposal = require("../models/PengajuanProposalModel.js");
 const fs = require("fs");
-const path = require('path')
+const path = require("path");
 
 const createProposal = async (req, res) => {
     const proposalData = req.body;
@@ -18,8 +18,9 @@ const createProposal = async (req, res) => {
         res.json("success");
     } catch (error) {
         console.error("Error creating proposal:", error);
-        res.status(500).json("Error creating proposal");
+        res.status(50).json("Error creating proposal");
     }
+    0;
 };
 
 const getAllProposal = async (req, res) => {
@@ -32,21 +33,34 @@ const getAllProposal = async (req, res) => {
     }
 };
 
+const getProposalByMahasiswaId = async (req, res) => {
+    const { id_mahasiswa } = req.params;
+
+    try {
+        const pengajuanProposalData = await PengajuanProposal.findOne({
+            where: { id_mahasiswa: id_mahasiswa },
+        });
+        if (!pengajuanProposalData) {
+            return res.status(404).json({ error: "Dosen not found" });
+        }
+        res.json(pengajuanProposalData);
+    } catch (error) {
+        console.error("Error retrieving proposal by user id mahasiswa:", error);
+        res.status(500).json("Error retrieving proposal");
+    }
+};
+
 const getPaginationProposal = async (req, res) => {
     const { page } = req.query;
-    const { id_mahasiswa } = req.params;
 
     const pageNumber = parseInt(page, 10) || 1;
     const pageSize = 10;
     const startIndex = (pageNumber - 1) * pageSize;
 
     try {
-        const totalCount = await PengajuanProposal.count({
-            where: { id_mahasiswa: id_mahasiswa }
-        });
+        const totalCount = await PengajuanProposal.count();
 
         const pengajuanProposalData = await PengajuanProposal.findAll({
-            where: { id_mahasiswa: id_mahasiswa },
             offset: startIndex,
             limit: pageSize,
         });
@@ -64,7 +78,6 @@ const getPaginationProposal = async (req, res) => {
     }
 };
 
-// jika update hapus file sebelumnya
 const updateProposal = async (req, res) => {
     const proposalData = req.body;
     const proposalId = req.params.id;
@@ -93,4 +106,10 @@ const updateProposal = async (req, res) => {
     }
 };
 
-module.exports = { createProposal, getAllProposal, getPaginationProposal, updateProposal };
+module.exports = {
+    createProposal,
+    getAllProposal,
+    getProposalByMahasiswaId,
+    getPaginationProposal,
+    updateProposal,
+};
