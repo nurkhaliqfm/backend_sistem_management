@@ -47,15 +47,12 @@ const getDosenByUserId = async (req, res) => {
 
 const getPaginationDosen = async (req, res) => {
     const { page, search } = req.query;
-    const { id_user } = req.params;
 
     const pageNumber = parseInt(page, 10) || 1;
     const pageSize = 10;
     const startIndex = (pageNumber - 1) * pageSize;
 
-    const whereCondition = {
-        id_user: id_user,
-    };
+    const whereCondition = {};
 
     // Menambahkan kondisi pencarian berdasarkan nama dosen
     if (search) {

@@ -4,14 +4,12 @@ const createProposal = async (req, res) => {
     const proposalData = req.body;
     console.log(req.file);
 
-    const fileName = req.file.path.split(/\\/g);
-
     try {
         await PengajuanProposal.create({
             judul: proposalData.judul,
             dosen_pembimbing: proposalData.dosen_pembimbing,
             dosen_penguji: proposalData.dosen_penguji,
-            document: fileName[1],
+            document: req.file.filename,
             status: proposalData.status,
             id_mahasiswa: proposalData.id_mahasiswa,
         });
@@ -21,6 +19,13 @@ const createProposal = async (req, res) => {
         res.status(500).json("Error creating proposal");
     }
 };
+//ngecek dia sudah ajukan proposal atau belum kalau sudah dia update
+
+//pertama cek proposal by id mhs,
+//kalau tidak brrti create kalau ada brrti update,
+//sebelum di hapus update dulu datanya 
+//kemudian kalau update cek file yang lama untuk di hapus kalau ada nda di hapus
+
 
 const getAllProposal = async (req, res) => {
     try {
@@ -64,7 +69,7 @@ const getPaginationProposal = async (req, res) => {
     }
 };
 
-
+// jika update hapus file sebelumnya
 const updateProposal = async (req, res) => {
     const proposalData = req.body;
     const proposalId = req.params.id;
@@ -77,7 +82,7 @@ const updateProposal = async (req, res) => {
         }
 
         if (req.file) {
-            proposalData.document = req.file.path;
+            proposalData.document = req.file.filename;
         }
 
         await PengajuanProposal.update(proposalData, {

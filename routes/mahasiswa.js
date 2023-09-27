@@ -9,7 +9,7 @@ const {
 const router = express.Router();
 
 router.get("/mahasiswa", getAllMahasiswa);
-router.get("/mahasiswa/pagination/:id_user", getPaginationMahasiswa);
+router.get("/mahasiswa/pagination", getPaginationMahasiswa);
 router.get("/mahasiswa/:id_user", getMahasiswabyUserId);
 router.post("/mahasiswa/create", createMahasiswa);
 

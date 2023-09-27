@@ -52,21 +52,19 @@ const getAllMahasiswa = async (req, res) => {
 
 const getPaginationMahasiswa = async (req, res) => {
     const { page, search, sortField, sortOrder } = req.query;
-    const { id_user } = req.params;
 
     const pageNumber = parseInt(page, 10) || 1;
     const pageSize = 10;
     const startIndex = (pageNumber - 1) * pageSize;
 
-    const whereCondition = {
-        id_user: id_user,
-    };
+    const whereCondition = {};
 
     if (search) {
         whereCondition.nama_mahasiswa = {
             [Op.like]: `%${search}%`,
         };
     }
+    console.log(whereCondition);
 
     const orderConfig =
         sortField && sortOrder ? [[sortField, sortOrder]] : [["createdAt", "ASC"]];

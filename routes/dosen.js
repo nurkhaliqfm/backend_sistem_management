@@ -10,7 +10,7 @@ const {
 const router = express.Router();
 
 router.get("/dosen", getAllDosen);
-router.get("/dosen/pagination/:id_user", getPaginationDosen);
+router.get("/dosen/pagination", getPaginationDosen);
 router.get("/dosen/:id_user", getDosenByUserId);
 router.patch("/dosen/:id", updateDosen);
 router.post("/dosen", createDosen);
