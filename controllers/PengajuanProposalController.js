@@ -15,7 +15,7 @@ const createOrUpdateProposal = async (req, res) => {
             // Jika proposal sudah ada, perbarui proposal tersebut
             if (req.file) {
                 // Hapus file lama sebelum mengganti dengan file baru
-                const oldFilePath = path.join(__dirname, '..', 'assets', existingProposal.document);
+                const oldFilePath = path.join(__dirname, '..', 'assets/proposal', existingProposal.document);
                 if (fs.existsSync(oldFilePath)) {
                     fs.unlinkSync(oldFilePath);
                 }

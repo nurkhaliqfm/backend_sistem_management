@@ -4,6 +4,6 @@ const { getDocument } = require("../controllers/DocumentController.js");
 
 const router = express.Router();
 
-router.get("/document/:fileName", getDocument);
+router.get("/document/proposal/:fileName", getDocument);
 
 module.exports = router;
