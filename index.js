@@ -11,6 +11,7 @@ const cors = require('cors');
 // const JadwalBimbingan = require("./models/JadwalBimbinganModel.js");
 // const Notification = require('./models/Notification.js');
 // const JadwalUjian = require("./models/JadwalUjianModel.js");
+// const DocumentLogbook = require("./models/DocumentLogbookModel.js");
 
 const userRouter = require("./routes/users.js");
 const mahasiswaRouter = require("./routes/mahasiswa.js");
@@ -35,6 +36,7 @@ const app = express();
         // await JadwalBimbingan.sync();
         // await Notification.sync();
         // await JadwalUjian.sync();
+        // await DocumentLogbook.sync();
     } catch (error) {
         console.log(error);
     }

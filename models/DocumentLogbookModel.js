@@ -43,5 +43,16 @@ const DocumentLogbook = db.define(
         freezeTableName: true,
     }
 );
+DocumentLogbook.associate = (models) => {
+    DocumentLogbook.belongsTo(models.Mahasiswa, {
+        foreignKey: "id_mahasiswa",
+        as: "mahasiswa",
+    });
+    DocumentLogbook.belongsTo(models.Dosen, {
+        foreignKey: 'id_dosen',
+        as: 'dosen',
+    });
+};
+
 
 module.exports = DocumentLogbook;

@@ -31,7 +31,7 @@ const Mahasiswa = db.define(
             allowNull: false,
         },
         status: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         pembimbing: {
@@ -64,17 +64,21 @@ Mahasiswa.associate = (models) => {
         foreignKey: "id_prodi",
         as: "prodi",
     });
-    Mahasiswa.hasMany(PengajuanProposal, {
+    Mahasiswa.hasMany(models.PengajuanProposal, {
         foreignKey: "id_mahasiswa",
         as: "pengajuan_proposal",
     });
-    Mahasiswa.hasMany(JadwalBimbingan, {
+    Mahasiswa.hasMany(models.JadwalBimbingan, {
         foreignKey: "id_mahasiswa",
         as: "jadwal_bimbingan",
     });
     Mahasiswa.hasMany(models.JadwalUjian, {
         foreignKey: "id_mahasiswa",
         as: "jadwal_ujian",
+    });
+    Mahasiswa.hasMany(models.DocumentLogbook, {
+        foreignKey: "id_mahasiswa",
+        as: "document_logbook",
     });
 };
 

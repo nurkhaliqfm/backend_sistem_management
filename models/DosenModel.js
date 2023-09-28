@@ -41,10 +41,13 @@ Dosen.associate = (models) => {
         foreignKey: "id_user",
         as: "user",
     });
-
-    Dosen.hasMany(JadwalBimbingan, {
+    Dosen.hasMany(models.JadwalBimbingan, {
         foreignKey: "id_dosen",
         as: "jadwal_bimbingan"
+    });
+    Dosen.hasMany(models.DocumentLogbook, {
+        foreignKey: 'id_dosen',
+        as: 'document_logbook',
     });
 
 };
