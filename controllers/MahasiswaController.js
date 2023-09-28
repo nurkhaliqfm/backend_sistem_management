@@ -66,8 +66,11 @@ const getPaginationMahasiswa = async (req, res) => {
     }
     console.log(whereCondition);
 
+    const validSortFields = ['angkatan', 'status'];
     const orderConfig =
-        sortField && sortOrder ? [[sortField, sortOrder]] : [["createdAt", "ASC"]];
+        sortField && sortOrder && validSortFields.includes(sortField)
+            ? [[sortField, sortOrder]]
+            : [['angkatan', 'ASC'], ['status', 'ASC']];
 
     try {
         const totalCount = await Mahasiswa.count({
