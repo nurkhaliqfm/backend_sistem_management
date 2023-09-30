@@ -38,7 +38,7 @@ const upload = multer({
 });
 
 router.post("/proposal", upload.single("document"), createOrUpdateProposal);
-router.get("/proposal", upload.single("document"), getAllProposal);
+router.get("/proposal", getAllProposal);
 router.get('/proposal/pagination', getPaginationProposal);
 router.get('/proposal/:id_mahasiswa', getProposalByMahasiswaId);
 router.patch("/proposal/:id", upload.single("document"), updateProposal);

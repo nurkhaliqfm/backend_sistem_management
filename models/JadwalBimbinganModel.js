@@ -18,8 +18,12 @@ const JadwalBimbingan = db.define(
             type: DataTypes.DATE,
             allowNull: false,
         },
-        status: {
+        document_name: {
             type: DataTypes.STRING,
+            allowNull: true,
+        },
+        status: {
+            type: DataTypes.INTEGER,
             allowNull: false,
         }
     },
@@ -33,12 +37,16 @@ JadwalBimbingan.associate = (models) => {
         foreignKey: "id_mahasiswa",
         as: "mahasiswa",
     });
-
     JadwalBimbingan.belongsTo(models.Dosen, {
         foreignKey: "id_dosen",
         as: "dosen",
+    });
+    JadwalBimbingan.hasOne(models.DocumentLogbook, {
+        foreignKey: "id_jadwal_bimbingan",
+        as: "document_logbook"
     });
 };
 
 
 module.exports = JadwalBimbingan;
+

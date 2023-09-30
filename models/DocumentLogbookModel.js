@@ -14,6 +14,10 @@ const DocumentLogbook = db.define(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        id_jadwal_bimbingan: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
         annotation_type: {
             type: DataTypes.STRING,
             allowNull: true,
@@ -52,6 +56,11 @@ DocumentLogbook.associate = (models) => {
         foreignKey: 'id_dosen',
         as: 'dosen',
     });
+    DocumentLogbook.belongsTo(models.JadwalBimbingan, {
+        foreignKey: "id_jadwal_bimbingan",
+        as: "jadwal_bimbingan"
+    });
+
 };
 
 

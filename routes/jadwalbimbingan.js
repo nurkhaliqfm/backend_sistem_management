@@ -3,12 +3,47 @@ const {
     createJadwalBimbingan,
     updateJadwalBimbingan,
     getAllJadwalBimbingan,
+    getJadwalBimbinganPending,
+    getPaginationJadwalBimbingan,
+    getJadwalBimbinganByStatus,
 } = require("../controllers/JadwalBimbinganController.js");
 
 const router = express.Router();
 
-router.post("/jadwal-bimbingan", createJadwalBimbingan);
+const multer = require("multer");
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "assets/bimbingan");
+    },
+
+    filename: function (req, file, cb) {
+        // Membuat nama file unik dengan timestamp
+        cb(null, Date.now() + "-" + file.originalname);
+    },
+});
+
+const fileFilter = (req, file, cb) => {
+    // Hanya mengizinkan file .pdf
+    if (file.mimetype === "application/pdf") {
+        cb(null, true);
+    } else {
+        cb(new Error("File type not allowed!"), false);
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 20 * 1024 * 1024, // 20MB limit
+    },
+});
+
+router.post("/jadwal-bimbingan", upload.single("document_name"), createJadwalBimbingan);
 router.get("/jadwal-bimbingan", getAllJadwalBimbingan);
-router.patch("/jadwal-bimbingan/:id", updateJadwalBimbingan);
+router.get("/jadwal-bimbingan/pending", getJadwalBimbinganPending);
+router.get("/jadwal-bimbingan/pagination", getPaginationJadwalBimbingan);
+router.get('/jadwal-bimbingan/status/:status', getJadwalBimbinganByStatus);
+router.patch("/jadwal-bimbingan/:id", upload.single("document_name"), updateJadwalBimbingan);
 
 module.exports = router;
