@@ -22,6 +22,10 @@ const Dosen = db.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        nidn: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         dosen_type: {
             type: DataTypes.STRING,
             allowNull: false,

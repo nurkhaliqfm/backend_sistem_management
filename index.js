@@ -5,7 +5,7 @@ const db = require("./config/Database.js");
 const cors = require('cors');
 
 // const Users = require("./models/UserModel.js");
-// const Dosen = require("./models/DosenModel.js")
+// const Dosen = require("./models/DosenModel.js");
 // const Mahasiswa = require("./models/MahasiswaModel.js");
 // const PengajuanProposal = require("./models/PengajuanProposalModel.js");
 // const JadwalBimbingan = require("./models/JadwalBimbinganModel.js");

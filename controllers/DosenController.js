@@ -1,6 +1,6 @@
 const Dosen = require("../models/DosenModel.js");
-const { Op } = require('sequelize');
 const Prodi = require("../models/ProdiModel.js");
+const { Op } = require('sequelize');
 
 
 const createDosen = async (req, res) => {
@@ -10,6 +10,7 @@ const createDosen = async (req, res) => {
         await Dosen.create({
             nama_dosen: dosenData.nama_dosen,
             nip: dosenData.nip,
+            nidn: dosenData.nidn,
             dosen_type: dosenData.dosen_type,
             dosen_profile: dosenData.dosen_profile,
             id_prodi: dosenData.id_prodi,
@@ -49,6 +50,7 @@ const getDosenByUserId = async (req, res) => {
             nama_prodi: prodiData.nama_resmi,
             nama_dosen: dosenData.nama_dosen,
             nip: dosenData.nip,
+            nidn: dosenData.nidn,
             dosen_type: dosenData.dosen_type,
             dosen_profile: dosenData.dosen_profile
         }
