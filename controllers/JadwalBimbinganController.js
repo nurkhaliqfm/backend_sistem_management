@@ -39,7 +39,7 @@ const getJadwalBimbinganPending = async (req, res) => {
             where: {
                 status: 0,
                 id_mahasiswa: id_mahasiswa
-            } //by id_mahasiswa
+            } //by id_mahasiswas
         });
 
         if (!jadwalBimbinganData) {
