@@ -35,8 +35,8 @@ const getJadwalBimbinganPending = async (req, res) => {
             where: { status: 0 }
         });
 
-        if (!jadwalBimbinganData || jadwalBimbinganData.length === 0) {
-            return res.status(404).json({ error: "No pending Jadwal Bimbingan found" });
+        if (!jadwalBimbinganData) {
+            return res.status(404).json({ error: "Pending Jadwal Bimbingan not found" });
         }
         res.json({ item: jadwalBimbinganData })
     } catch (error) {
@@ -44,6 +44,7 @@ const getJadwalBimbinganPending = async (req, res) => {
         res.status(500).json("Error retrieving Jadwal Bimbingan with pending status");
     }
 };
+
 
 const getPaginationJadwalBimbingan = async (req, res) => {
     const { page } = req.query;
@@ -76,8 +77,6 @@ const getPaginationJadwalBimbingan = async (req, res) => {
         res.status(500).json("Error retrieving paginated jadwal bimbingan with status 1");
     }
 };
-
-
 
 const getJadwalBimbinganByStatus = async (req, res) => {
     const { status } = req.params
