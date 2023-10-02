@@ -64,7 +64,7 @@ const getPaginationDosen = async (req, res) => {
     const { page, search } = req.query;
 
     const pageNumber = parseInt(page, 10) || 1;
-    const pageSize = 10;
+    const pageSize = 5;
     const startIndex = (pageNumber - 1) * pageSize;
 
     const whereCondition = {};

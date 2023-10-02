@@ -54,7 +54,7 @@ const getPaginationMahasiswa = async (req, res) => {
     const { page, search, sortField, sortOrder } = req.query;
 
     const pageNumber = parseInt(page, 10) || 1;
-    const pageSize = 10;
+    const pageSize = 5;
     const startIndex = (pageNumber - 1) * pageSize;
 
     const whereCondition = {};

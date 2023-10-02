@@ -5,7 +5,6 @@ const {
     getAllJadwalBimbingan,
     getJadwalBimbinganPending,
     getPaginationJadwalBimbingan,
-    getJadwalBimbinganByStatus,
 } = require("../controllers/JadwalBimbinganController.js");
 
 const router = express.Router();
@@ -41,9 +40,8 @@ const upload = multer({
 
 router.post("/jadwal-bimbingan", upload.single("document_name"), createJadwalBimbingan);
 router.get("/jadwal-bimbingan", getAllJadwalBimbingan);
-router.get("/jadwal-bimbingan/pending", getJadwalBimbinganPending);
-router.get("/jadwal-bimbingan/pagination", getPaginationJadwalBimbingan);
-router.get('/jadwal-bimbingan/status/:status', getJadwalBimbinganByStatus);
+router.get('/jadwal-bimbingan/pending/:id_mahasiswa', getJadwalBimbinganPending);
+router.get("/jadwal-bimbingan/pagination/:id_mahasiswa", getPaginationJadwalBimbingan);
 router.patch("/jadwal-bimbingan/:id", upload.single("document_name"), updateJadwalBimbingan);
 
 module.exports = router;

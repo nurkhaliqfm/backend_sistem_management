@@ -3,21 +3,24 @@ const JadwalBimbingan = require("../models/JadwalBimbinganModel.js");
 const createJadwalBimbingan = async (req, res) => {
     const jadwalBimbinganData = req.body;
     console.log(req.file);
-
     try {
+        const document_name = req.file ? req.file.filename : null;
+
         await JadwalBimbingan.create({
             jadwal: jadwalBimbinganData.jadwal,
-            document_name: req.file.filename,
+            document_name: document_name,
             status: jadwalBimbinganData.status,
             id_mahasiswa: jadwalBimbinganData.id_mahasiswa,
             id_dosen: jadwalBimbinganData.id_dosen,
         });
+
         res.json("success");
     } catch (error) {
         console.error("Error creating jadwal bimbingan:", error);
         res.status(500).json("Error creating jadwal bimbingan");
     }
 };
+
 
 const getAllJadwalBimbingan = async (req, res) => {
     try {
@@ -30,9 +33,13 @@ const getAllJadwalBimbingan = async (req, res) => {
 };
 
 const getJadwalBimbinganPending = async (req, res) => {
+    const { id_mahasiswa } = req.params;
     try {
         const jadwalBimbinganData = await JadwalBimbingan.findAll({
-            where: { status: 0 }
+            where: {
+                status: 0,
+                id_mahasiswa: id_mahasiswa
+            } //by id_mahasiswa
         });
 
         if (!jadwalBimbinganData) {
@@ -45,21 +52,26 @@ const getJadwalBimbinganPending = async (req, res) => {
     }
 };
 
-
 const getPaginationJadwalBimbingan = async (req, res) => {
-    const { page } = req.query;
+    const { page, status } = req.query;
+    const { id_mahasiswa } = req.params;
 
     const pageNumber = parseInt(page, 10) || 1;
-    const pageSize = 10;
+    const pageSize = 5;
     const startIndex = (pageNumber - 1) * pageSize;
+
+    const whereConditions = {
+        id_mahasiswa,
+        status: status ? parseInt(status, 10) : 1
+    };
 
     try {
         const totalCount = await JadwalBimbingan.count({
-            where: { status: 1 }
+            where: whereConditions
         });
 
         const jadwalBimbinganData = await JadwalBimbingan.findAll({
-            where: { status: 1 },
+            where: whereConditions,
             order: [['createdAt', 'DESC']],
             offset: startIndex,
             limit: pageSize,
@@ -73,27 +85,10 @@ const getPaginationJadwalBimbingan = async (req, res) => {
             totalPages: Math.ceil(totalCount / pageSize),
         });
     } catch (error) {
-        console.error("Error retrieving paginated jadwal bimbingan with status 1:", error);
-        res.status(500).json("Error retrieving paginated jadwal bimbingan with status 1");
+        console.error("Error retrieving paginated jadwal bimbingan:", error);
+        res.status(500).json("Error retrieving paginated jadwal bimbingan");
     }
 };
-
-const getJadwalBimbinganByStatus = async (req, res) => {
-    const { status } = req.params
-
-    try {
-        const jadwalBimbinganData = await JadwalBimbingan.findAll({
-            where: { status: status }
-        });
-        if (!jadwalBimbinganData) {
-            return res.status(404).json({ error: "Status not found" });
-        }
-        res.json({ item: jadwalBimbinganData })
-    } catch (error) {
-        console.error("Error retrieving jadwal bimbingan by status:", error);
-        res.status(500).json("Error retrieving status");
-    }
-}
 
 const updateJadwalBimbingan = async (req, res) => {
     const jadwalBimbinganData = req.body;
@@ -130,6 +125,5 @@ module.exports = {
     getAllJadwalBimbingan,
     getJadwalBimbinganPending,
     getPaginationJadwalBimbingan,
-    getJadwalBimbinganByStatus,
     updateJadwalBimbingan,
 };

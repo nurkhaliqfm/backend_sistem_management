@@ -31,7 +31,7 @@ const getPaginationNotification = async (req, res) => {
     const { id_user_to } = req.params;
 
     const pageNumber = parseInt(page, 10) || 1;
-    const pageSize = 10;
+    const pageSize = 5;
     const startIndex = (pageNumber - 1) * pageSize;
 
     try {
