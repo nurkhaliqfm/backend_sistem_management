@@ -1,5 +1,6 @@
 const Dosen = require("../models/DosenModel.js");
 const { Op } = require('sequelize');
+const Prodi = require("../models/ProdiModel.js");
 
 
 const createDosen = async (req, res) => {
@@ -38,7 +39,21 @@ const getDosenByUserId = async (req, res) => {
         if (!dosenData) {
             return res.status(404).json({ error: "Dosen not found" });
         }
-        res.json(dosenData);
+
+        const prodiData = await Prodi.findOne({
+            where: { id: dosenData.id_prodi }
+        })
+
+        const data = {
+            id: dosenData.id,
+            nama_prodi: prodiData.nama_resmi,
+            nama_dosen: dosenData.nama_dosen,
+            nip: dosenData.nip,
+            dosen_type: dosenData.dosen_type,
+            dosen_profile: dosenData.dosen_profile
+        }
+
+        res.json(data);
     } catch (error) {
         console.error("Error retrieving dosen by user ID:", error);
         res.status(500).json("Error retrieving dosen");
