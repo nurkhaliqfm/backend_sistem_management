@@ -55,7 +55,6 @@ const getJadwalBimbinganPending = async (req, res) => {
     }
 };
 
-//jadwal Bimbingan
 const getPaginationJadwalBimbingan = async (req, res) => {
     const { page, status } = req.query;
     const { id_user } = req.params;
