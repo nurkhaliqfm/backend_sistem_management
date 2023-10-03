@@ -71,6 +71,47 @@ const getProposalByMahasiswaId = async (req, res) => {
     }
 };
 
+
+const getPaginationProposalPending = async (req, res) => {
+    const { page } = req.query;
+
+    const pageNumber = parseInt(page, 10) || 1;
+    const pageSize = 5;
+    const startIndex = (pageNumber - 1) * pageSize;
+
+    const whereConditions = {
+        status: 0
+    };
+
+    try {
+        const totalCount = await PengajuanProposal.count({
+            where: whereConditions
+        });
+
+        const pengajuanProposalData = await PengajuanProposal.findAll({
+            where: whereConditions,
+            offset: startIndex,
+            limit: pageSize
+        });
+
+        if (pengajuanProposalData.length === 0) {
+            return res.status(404).json({ error: "Pengajuan Proposal with status 0 not found" });
+        }
+
+        res.json({
+            items: pengajuanProposalData,
+            page: pageNumber,
+            per_page: pageSize,
+            totalItems: totalCount,
+            totalPages: Math.ceil(totalCount / pageSize),
+        });
+    } catch (error) {
+        console.error("Error retrieving paginated Pengajuan Proposal with status 0:", error);
+        res.status(500).json("Error retrieving paginated Pengajuan Proposal with status 0");
+    }
+};
+
+
 const getPaginationProposal = async (req, res) => {
     const { page } = req.query;
 
@@ -78,13 +119,22 @@ const getPaginationProposal = async (req, res) => {
     const pageSize = 5;
     const startIndex = (pageNumber - 1) * pageSize;
 
+    const whereConditions = {
+        status: 1
+    };
+
     try {
-        const totalCount = await PengajuanProposal.count();
+        const totalCount = await PengajuanProposal.count({ where: whereConditions });
 
         const pengajuanProposalData = await PengajuanProposal.findAll({
+            where: whereConditions,
             offset: startIndex,
             limit: pageSize,
         });
+
+        if (pengajuanProposalData.length === 0) {
+            return res.status(404).json({ error: "Pengajuan Proposal with status 1 not found" });
+        }
 
         res.json({
             item: pengajuanProposalData,
@@ -94,10 +144,11 @@ const getPaginationProposal = async (req, res) => {
             totalPages: Math.ceil(totalCount / pageSize),
         });
     } catch (error) {
-        console.error("Error retrieving paginated pengajuan proposal:", error);
-        res.status(500).json("Error retrieving paginated pengajuan proposal");
+        console.error("Error retrieving paginated pengajuan proposal with status 1:", error);
+        res.status(500).json("Error retrieving paginated pengajuan proposal with status 1");
     }
 };
+
 
 const updateProposal = async (req, res) => {
     const proposalData = req.body;
@@ -131,6 +182,7 @@ module.exports = {
     createOrUpdateProposal,
     getAllProposal,
     getProposalByMahasiswaId,
+    getPaginationProposalPending,
     getPaginationProposal,
     updateProposal,
 };

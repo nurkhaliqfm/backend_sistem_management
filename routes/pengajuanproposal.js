@@ -4,6 +4,7 @@ const {
     updateProposal,
     getAllProposal,
     getPaginationProposal,
+    getPaginationProposalPending,
     getProposalByMahasiswaId
 } = require("../controllers/PengajuanProposalController.js");
 const router = express.Router();
@@ -40,6 +41,7 @@ const upload = multer({
 router.post("/proposal", upload.single("document"), createOrUpdateProposal);
 router.get("/proposal", getAllProposal);
 router.get('/proposal/pagination', getPaginationProposal);
+router.get('/proposal/pending', getPaginationProposalPending);
 router.get('/proposal/:id_mahasiswa', getProposalByMahasiswaId);
 router.patch("/proposal/:id", upload.single("document"), updateProposal);
 

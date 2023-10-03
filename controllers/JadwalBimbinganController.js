@@ -1,4 +1,7 @@
 const JadwalBimbingan = require("../models/JadwalBimbinganModel.js");
+const User = require("../models/UserModel.js");
+const Dosen = require("../models/DosenModel.js");
+const Mahasiswa = require("../models/MahasiswaModel.js");
 
 const createJadwalBimbingan = async (req, res) => {
     const jadwalBimbinganData = req.body;
@@ -52,18 +55,35 @@ const getJadwalBimbinganPending = async (req, res) => {
     }
 };
 
+//jadwal Bimbingan
 const getPaginationJadwalBimbingan = async (req, res) => {
     const { page, status } = req.query;
-    const { id_mahasiswa } = req.params;
+    const { id_user } = req.params;
 
     const pageNumber = parseInt(page, 10) || 1;
     const pageSize = 5;
     const startIndex = (pageNumber - 1) * pageSize;
 
-    const whereConditions = {
-        id_mahasiswa,
-        status: status ? parseInt(status, 10) : 1
-    };
+    let whereConditions;
+
+    const dataUser = await User.findByPk(id_user);
+    if (!dataUser) {
+        return res.status(400).json("Error retrieving paginated jadwal bimbingan");
+    }
+
+    if (dataUser.role == "dosen") {
+        const dataDosen = await Dosen.findOne({ where: { id_user: dataUser.id } })
+        whereConditions = {
+            id_dosen: dataDosen.id,
+            status: status ? parseInt(status, 10) : 1
+        };
+    } else {
+        const dataMahasiswa = await Mahasiswa.findOne({ where: { id_user: dataUser.id } })
+        whereConditions = {
+            id_mahasiswa: dataMahasiswa.id,
+            status: status ? parseInt(status, 10) : 1
+        };
+    }
 
     try {
         const totalCount = await JadwalBimbingan.count({
