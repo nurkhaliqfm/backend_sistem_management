@@ -36,24 +36,42 @@ const getAllJadwalBimbingan = async (req, res) => {
 };
 
 const getJadwalBimbinganPending = async (req, res) => {
-    const { id_mahasiswa } = req.params;
-    try {
-        const jadwalBimbinganData = await JadwalBimbingan.findAll({
-            where: {
-                status: 0,
-                id_mahasiswa: id_mahasiswa
-            } //by id_mahasiswas
-        });
+    const { id_user } = req.params;
 
-        if (!jadwalBimbinganData) {
+    let whereConditions;
+
+    const dataUser = await User.findByPk(id_user);
+    if (!dataUser) {
+        return res.status(400).json("User not found");
+    }
+
+    if (dataUser.role == "dosen") {
+        const dataDosen = await Dosen.findOne({ where: { id_user: dataUser.id } });
+        whereConditions = {
+            id_dosen: dataDosen.id,
+            status: 0
+        };
+    } else {
+        const dataMahasiswa = await Mahasiswa.findOne({ where: { id_user: dataUser.id } });
+        whereConditions = {
+            id_mahasiswa: dataMahasiswa.id,
+            status: 0
+        };
+    }
+
+    try {
+        const jadwalBimbinganData = await JadwalBimbingan.findAll({ where: whereConditions });
+
+        if (jadwalBimbinganData.length === 0) {
             return res.status(404).json({ error: "Pending Jadwal Bimbingan not found" });
         }
-        res.json({ item: jadwalBimbinganData })
+        res.json({ items: jadwalBimbinganData });
     } catch (error) {
         console.error("Error retrieving Jadwal Bimbingan with pending status:", error);
         res.status(500).json("Error retrieving Jadwal Bimbingan with pending status");
     }
 };
+
 
 const getPaginationJadwalBimbingan = async (req, res) => {
     const { page, status } = req.query;

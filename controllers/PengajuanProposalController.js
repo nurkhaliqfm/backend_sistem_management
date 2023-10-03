@@ -71,7 +71,6 @@ const getProposalByMahasiswaId = async (req, res) => {
     }
 };
 
-
 const getPaginationProposalPending = async (req, res) => {
     const { page } = req.query;
 
@@ -110,7 +109,6 @@ const getPaginationProposalPending = async (req, res) => {
         res.status(500).json("Error retrieving paginated Pengajuan Proposal with status 0");
     }
 };
-
 
 const getPaginationProposal = async (req, res) => {
     const { page } = req.query;
