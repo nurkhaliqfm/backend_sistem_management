@@ -129,12 +129,44 @@ const getPaginationProposalPending = async (req, res) => {
             limit: pageSize
         });
 
-        if (pengajuanProposalData.length === 0) {
+        const modifiedProposalData = await Promise.all(
+            pengajuanProposalData.map(async (proposal) => {
+
+                let dosenPembimbing = [];
+                let dosenPenguji = [];
+
+                await Promise.all(
+                    proposal.dosen_pembimbing.split("|").map(async (id_dosen) => {
+                        const bodyData = await Dosen.findByPk(id_dosen);
+                        if (bodyData) {
+                            dosenPembimbing.push(bodyData.dataValues.nama_dosen);
+                        }
+                    })
+                );
+
+                await Promise.all(
+                    proposal.dosen_penguji.split("|").map(async (id_dosen) => {
+                        const bodyData = await Dosen.findByPk(id_dosen);
+                        if (bodyData) {
+                            dosenPenguji.push(bodyData.dataValues.nama_dosen);
+                        }
+                    })
+                );
+
+                return {
+                    ...proposal.dataValues,
+                    dosen_pembimbing: dosenPembimbing,
+                    dosen_penguji: dosenPenguji,
+                };
+            })
+        );
+
+        if (modifiedProposalData.length === 0) {
             return res.status(404).json({ error: "Pengajuan Proposal with status 0 not found" });
         }
 
         res.json({
-            items: pengajuanProposalData,
+            items: modifiedProposalData,
             page: pageNumber,
             per_page: pageSize,
             totalItems: totalCount,
@@ -145,6 +177,7 @@ const getPaginationProposalPending = async (req, res) => {
         res.status(500).json("Error retrieving paginated Pengajuan Proposal with status 0");
     }
 };
+
 
 const getPaginationProposal = async (req, res) => {
     const { page } = req.query;
@@ -166,12 +199,44 @@ const getPaginationProposal = async (req, res) => {
             limit: pageSize,
         });
 
-        if (pengajuanProposalData.length === 0) {
+        const modifiedProposalData = await Promise.all(
+            pengajuanProposalData.map(async (proposal) => {
+
+                let dosenPembimbing = [];
+                let dosenPenguji = [];
+
+                await Promise.all(
+                    proposal.dosen_pembimbing.split("|").map(async (id_dosen) => {
+                        const bodyData = await Dosen.findByPk(id_dosen);
+                        if (bodyData) {
+                            dosenPembimbing.push(bodyData.dataValues.nama_dosen);
+                        }
+                    })
+                );
+
+                await Promise.all(
+                    proposal.dosen_penguji.split("|").map(async (id_dosen) => {
+                        const bodyData = await Dosen.findByPk(id_dosen);
+                        if (bodyData) {
+                            dosenPenguji.push(bodyData.dataValues.nama_dosen);
+                        }
+                    })
+                );
+
+                return {
+                    ...proposal.dataValues,
+                    dosen_pembimbing: dosenPembimbing,
+                    dosen_penguji: dosenPenguji,
+                };
+            })
+        );
+
+        if (modifiedProposalData.length === 0) {
             return res.status(404).json({ error: "Pengajuan Proposal with status 1 not found" });
         }
 
         res.json({
-            item: pengajuanProposalData,
+            items: modifiedProposalData,
             page: pageNumber,
             per_page: pageSize,
             totalItems: totalCount,
@@ -182,6 +247,7 @@ const getPaginationProposal = async (req, res) => {
         res.status(500).json("Error retrieving paginated pengajuan proposal with status 1");
     }
 };
+
 
 
 const updateProposal = async (req, res) => {
