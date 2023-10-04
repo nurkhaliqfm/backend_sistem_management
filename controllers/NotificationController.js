@@ -1,4 +1,5 @@
 const Notification = require("../models/NotificationModel.js");
+const User = require("../models/UserModel.js");
 
 const createNotification = async (req, res) => {
     const notificationData = req.body;

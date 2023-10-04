@@ -149,9 +149,26 @@ const getMahasiswabyUserId = async (req, res) => {
     }
 };
 
+const updateMahasiswa = async (req, res) => {
+    const mahasiswaData = req.body;
+
+    try {
+        await Mahasiswa.update(mahasiswaData, {
+            where: {
+                id: req.params.id,
+            },
+        });
+        res.json("Mahasiswa berhasil di-update.");
+    } catch (error) {
+        console.error("Error updating mahasiswa:", error);
+        res.status(500).json("Error updating mahasiswa");
+    }
+};
+
 module.exports = {
     createMahasiswa,
     getAllMahasiswa,
     getMahasiswabyUserId,
     getPaginationMahasiswa,
+    updateMahasiswa
 };
