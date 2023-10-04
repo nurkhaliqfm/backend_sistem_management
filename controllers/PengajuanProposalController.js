@@ -1,4 +1,6 @@
 const PengajuanProposal = require("../models/PengajuanProposalModel.js");
+const Dosen = require("../models/DosenModel.js");
+
 const fs = require("fs");
 const path = require("path");
 
@@ -47,12 +49,46 @@ const createOrUpdateProposal = async (req, res) => {
 const getAllProposal = async (req, res) => {
     try {
         const pengajuanProposalData = await PengajuanProposal.findAll();
-        res.json(pengajuanProposalData);
+
+        const modifiedPengajuanProposalData = await Promise.all(
+            pengajuanProposalData.map(async (proposal) => {
+
+                let dosenPembimbing = [];
+                let dosenPenguji = [];
+
+                await Promise.all(
+                    proposal.dosen_pembimbing.split("|").map(async (id_dosen) => {
+                        const bodyData = await Dosen.findByPk(id_dosen)
+                        if (bodyData) {
+                            dosenPembimbing.push(bodyData.dataValues.nama_dosen);
+                        }
+                    })
+                )
+
+                await Promise.all(
+                    proposal.dosen_penguji.split("|").map(async (id_dosen) => {
+                        const bodyData = await Dosen.findByPk(id_dosen)
+                        if (bodyData) {
+                            dosenPenguji.push(bodyData.dataValues.nama_dosen);
+                        }
+                    })
+                )
+
+                return {
+                    ...proposal.dataValues,
+                    dosen_pembimbing: dosenPembimbing,
+                    dosen_penguji: dosenPenguji,
+                };
+            })
+        );
+
+        res.json(modifiedPengajuanProposalData);
     } catch (error) {
         console.error("Kesalahan saat mengambil semua pengajuan proposal:", error);
         res.status(500).json("Kesalahan saat mengambil semua pengajuan proposal");
     }
 };
+
 
 const getProposalByMahasiswaId = async (req, res) => {
     const { id_mahasiswa } = req.params;

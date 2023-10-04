@@ -27,6 +27,34 @@ const getAllNotification = async (req, res) => {
     }
 };
 
+//yang akan dikerjakan
+const getListNotification = async (req, res) => {
+    const { id_user } = req.params;
+
+    const dataUser = await User.findByPk(id_user);
+    if (!dataUser) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    try {
+        const notifications = await Notification.findAll({
+            where: { id_user_to: id_user },
+            attributes: ['id_user_from', [Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'numberOfNotifs']],
+            group: ['id_user_from'],
+            order: [[Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'DESC']]
+        });
+
+        res.json({
+            data: notifications
+        });
+    } catch (error) {
+        console.error("Error retrieving grouped notifications:", error);
+        res.status(500).json("Error retrieving grouped notifications");
+    }
+};
+
+
+
 const getPaginationNotification = async (req, res) => {
     const { page } = req.query;
     const { id_user_to } = req.params;
