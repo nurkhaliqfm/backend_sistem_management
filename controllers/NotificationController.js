@@ -45,15 +45,13 @@ const getListNotification = async (req, res) => {
         });
 
         res.json({
-            data: notifications
+            item: notifications
         });
     } catch (error) {
         console.error("Error retrieving grouped notifications:", error);
         res.status(500).json("Error retrieving grouped notifications");
     }
 };
-
-
 
 const getPaginationNotification = async (req, res) => {
     const { page } = req.query;
@@ -107,6 +105,7 @@ const updateNotification = async (req, res) => {
 module.exports = {
     createNotification,
     getAllNotification,
+    getListNotification,
     getPaginationNotification,
     updateNotification,
 };

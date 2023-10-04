@@ -110,14 +110,37 @@ const getPaginationMahasiswa = async (req, res) => {
 
         const modifiedMahasiswaData = await Promise.all(
             mahasiswaData.map(async (mahasiswa) => {
+
+                let dosenPembimbing = [];
+                let dosenPenguji = [];
+
                 const prodi = await Prodi.findOne({
                     where: { id: mahasiswa.id_prodi },
                 });
+
+                await Promise.all(
+                    mahasiswa.pembimbing.split("|").map(async (id_dosen) => {
+                        const bodyData = await Dosen.findByPk(id_dosen)
+                        if (bodyData) {
+                            dosenPembimbing.push(bodyData.dataValues.nama_dosen);
+                        }
+                    })
+                );
+
+                await Promise.all(
+                    mahasiswa.penguji.split("|").map(async (id_dosen) => {
+                        const bodyData = await Dosen.findByPk(id_dosen)
+                        if (bodyData) {
+                            dosenPenguji.push(bodyData.dataValues.nama_dosen);
+                        }
+                    })
+                );
+
                 return {
                     ...mahasiswa.dataValues,
                     nama_prodi: prodi ? prodi.nama_resmi : "N/A",
-                    pembimbing: mahasiswa.pembimbing.split("|"),
-                    penguji: mahasiswa.penguji.split("|"),
+                    pembimbing: dosenPembimbing,
+                    penguji: dosenPenguji,
                 };
             })
         );
@@ -137,6 +160,7 @@ const getPaginationMahasiswa = async (req, res) => {
         res.status(500).json("Error retrieving paginated mahasiswa");
     }
 };
+
 
 const getMahasiswabyUserId = async (req, res) => {
     const { id_user } = req.params;
