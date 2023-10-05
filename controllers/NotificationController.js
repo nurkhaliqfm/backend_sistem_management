@@ -27,7 +27,6 @@ const getAllNotification = async (req, res) => {
     }
 };
 
-//yang dikerjakan
 const getListNotification = async (req, res) => {
     const { id_user } = req.params;
 
@@ -37,14 +36,15 @@ const getListNotification = async (req, res) => {
     }
 
     try {
-        let notifications = []
+        let notifications = [];
         const getNotif = await Notification.findAll({
             where: { id_user_to: id_user },
-            // attributes: ['id_user_from', [Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'numberOfNotifs']],
-            // group: ['id_user_from'],
-            // order: [[Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'DESC']]
+            attributes: ['id_user_from', [Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'numberOfNotifs']],
+            group: ['id_user_from'],
+            order: [[Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'DESC']]
         });
-        console.log(getNotif.dataValues);
+
+        notifications.push(...getNotif);
 
         if (dataUser.role == 'mahasiswa') {
             const notificationsByMahasiswa = await Notification.findAll({
@@ -53,8 +53,9 @@ const getListNotification = async (req, res) => {
                 group: ['id_user_from'],
                 order: [[Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'DESC']]
             });
-        }
 
+            notifications.push(...notificationsByMahasiswa);
+        }
 
         res.json({
             item: notifications
@@ -65,7 +66,7 @@ const getListNotification = async (req, res) => {
     }
 };
 
-//yang di kerjakan
+
 const getListDetailNotification = async (req, res) => {
     const { id_user_to, id_user_from } = req.params;
 
@@ -84,19 +85,39 @@ const getListDetailNotification = async (req, res) => {
     }
 
     try {
-        const notifications = await Notification.findAll({
-            where: {
-                id_user_to: id_user_to,
-                id_user_from: id_user_from
+        let notifications = [];
+
+        if (senderUser.role == 'mahasiswa') {
+            if (id_user_to === id_user_from) {
+                const notificationsByMahasiswa = await Notification.findAll({
+                    where: { id_user_from: id_user_to },
+                });
+                notifications.push(...notificationsByMahasiswa);
+            } else {
+                const getNotif = await Notification.findAll({
+                    where: {
+                        id_user_to: id_user_to,
+                        id_user_from: id_user_from
+                    }
+                });
+                notifications.push(...getNotif);
             }
-        });
+        } else {
+            const getNotif = await Notification.findAll({
+                where: {
+                    id_user_to: id_user_to,
+                    id_user_from: id_user_from
+                }
+            });
+            notifications.push(...getNotif);
+        }
 
         if (notifications.length === 0) {
             return res.status(404).json({ error: "No notifications found between the specified users." });
         }
 
         res.json({
-            data: notifications
+            item: notifications
         });
 
     } catch (error) {
