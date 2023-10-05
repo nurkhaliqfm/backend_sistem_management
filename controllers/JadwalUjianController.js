@@ -1,4 +1,6 @@
 const JadwalUjian = require("../models/JadwalUjianModel.js");
+const Dosen = require("../models/DosenModel.js");
+const Mahasiswa = require("../models/MahasiswaModel.js");
 
 const createJadwalUjian = async (req, res) => {
     const jadwalUjianData = req.body;

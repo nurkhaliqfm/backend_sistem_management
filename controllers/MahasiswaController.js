@@ -177,6 +177,27 @@ const getMahasiswabyUserId = async (req, res) => {
             where: { id: mahasiswaData.id_prodi },
         });
 
+        let dosenPembimbing = [];
+        let dosenPenguji = [];
+
+        await Promise.all(
+            mahasiswaData.pembimbing.split("|").map(async (id_dosen) => {
+                const bodyData = await Dosen.findByPk(id_dosen)
+                if (bodyData) {
+                    dosenPembimbing.push(bodyData.dataValues.nama_dosen);
+                }
+            })
+        )
+
+        await Promise.all(
+            mahasiswaData.penguji.split("|").map(async (id_dosen) => {
+                const bodyData = await Dosen.findByPk(id_dosen)
+                if (bodyData) {
+                    dosenPenguji.push(bodyData.dataValues.nama_dosen);
+                }
+            })
+        )
+
         const data = {
             id: mahasiswaData.id,
             nama_prodi: prodiData ? prodiData.nama_resmi : "N/A",
@@ -184,10 +205,10 @@ const getMahasiswabyUserId = async (req, res) => {
             nim: mahasiswaData.nim,
             angkatan: mahasiswaData.angkatan,
             status: mahasiswaData.status,
-            pembimbing: mahasiswaData.pembimbing.split("|"),
-            penguji: mahasiswaData.penguji.split("|"),
+            pembimbing: dosenPembimbing,
+            penguji: dosenPenguji,
             judul: mahasiswaData.judul,
-            mahasiwa_profile: mahasiswaData.mahasiswa_profile,
+            mahasiswa_profile: mahasiswaData.mahasiswa_profile,
         };
 
         res.json(data);
@@ -196,6 +217,65 @@ const getMahasiswabyUserId = async (req, res) => {
         res.status(500).json("Error retrieving mahasiswa");
     }
 };
+
+
+const getMahasiswaByIdMahasiswa = async (req, res) => {
+    const { id_mahasiswa } = req.params;
+    try {
+        const mahasiswaData = await Mahasiswa.findOne({
+            where: { id_mahasiswa: id_mahasiswa },
+        });
+
+        if (!mahasiswaData) {
+            return res.status(404).json({ error: "Mahasiswa tidak ditemukan" });
+        }
+
+        const prodiData = await Prodi.findOne({
+            where: { id: mahasiswaData.id_prodi },
+        });
+
+        let dosenPembimbing = [];
+        let dosenPenguji = [];
+
+        await Promise.all(
+            mahasiswaData.pembimbing.split("|").map(async (id_dosen) => {
+                const bodyData = await Dosen.findByPk(id_dosen)
+                if (bodyData) {
+                    dosenPembimbing.push(bodyData.dataValues.nama_dosen);
+                }
+            })
+        )
+
+        await Promise.all(
+            mahasiswaData.penguji.split("|").map(async (id_dosen) => {
+                const bodyData = await Dosen.findByPk(id_dosen)
+                if (bodyData) {
+                    dosenPenguji.push(bodyData.dataValues.nama_dosen);
+                }
+            })
+        )
+
+        const data = {
+            id: mahasiswaData.id,
+            nama_prodi: prodiData ? prodiData.nama_resmi : "N/A",
+            nama_mahasiswa: mahasiswaData.nama_mahasiswa,
+            nim: mahasiswaData.nim,
+            angkatan: mahasiswaData.angkatan,
+            status: mahasiswaData.status,
+            pembimbing: dosenPembimbing,
+            penguji: dosenPenguji,
+            judul: mahasiswaData.judul,
+            mahasiswa_profile: mahasiswaData.mahasiswa_profile,
+        };
+
+        res.json(data);
+    } catch (error) {
+        console.error("Error saat mengambil data mahasiswa berdasarkan id mahasiswa:", error);
+        res.status(500).json({ error: "Error saat mengambil data mahasiswa berdasarkan id mahasiswa" });
+    }
+};
+
+
 
 const updateMahasiswa = async (req, res) => {
     const mahasiswaData = req.body;
@@ -217,6 +297,7 @@ module.exports = {
     createMahasiswa,
     getAllMahasiswa,
     getMahasiswabyUserId,
+    getMahasiswaByIdMahasiswa,
     getPaginationMahasiswa,
     updateMahasiswa
 };

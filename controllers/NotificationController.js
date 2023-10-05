@@ -27,7 +27,7 @@ const getAllNotification = async (req, res) => {
     }
 };
 
-//yang akan dikerjakan
+//yang dikerjakan
 const getListNotification = async (req, res) => {
     const { id_user } = req.params;
 
@@ -36,13 +36,30 @@ const getListNotification = async (req, res) => {
         return res.status(404).json({ error: "User not found" });
     }
 
+
     try {
-        const notifications = await Notification.findAll({
+        let notifications = []
+        const getNotif = await Notification.findAll({
             where: { id_user_to: id_user },
             attributes: ['id_user_from', [Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'numberOfNotifs']],
             group: ['id_user_from'],
             order: [[Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'DESC']]
         });
+
+
+        if (dataUser.role == 'mahasiswa') {
+            const notificationsByMahasiswa = await Notification.findAll({
+                where: { id_user_from: id_user },
+                attributes: ['id_user_from', [Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'numberOfNotifs']],
+                group: ['id_user_from'],
+                order: [[Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'DESC']]
+            });
+        }
+        if (getNotif && getNotif.length > 0) {
+            console.log('halo', getNotif[0].dataValues);
+        } else {
+            console.log('test');
+        }
 
         res.json({
             item: notifications
@@ -52,6 +69,48 @@ const getListNotification = async (req, res) => {
         res.status(500).json("Error retrieving grouped notifications");
     }
 };
+
+//yang di kerjakan
+const getListDetailNotification = async (req, res) => {
+    const { id_user_to, id_user_from } = req.params;
+
+    const recipientUser = await User.findOne({
+        where: { id: id_user_to }
+    });
+    if (!recipientUser) {
+        return res.status(404).json({ error: "Recipient user not found" });
+    }
+
+    const senderUser = await User.findOne({
+        where: { id: id_user_from }
+    });
+    if (!senderUser) {
+        return res.status(404).json({ error: "Sender user not found" });
+    }
+
+    try {
+        const notifications = await Notification.findAll({
+            where: {
+                id_user_to: id_user_to,
+                id_user_from: id_user_from
+            }
+        });
+
+        if (notifications.length === 0) {
+            return res.status(404).json({ error: "No notifications found between the specified users." });
+        }
+
+        res.json({
+            data: notifications
+        });
+
+    } catch (error) {
+        console.error("Error retrieving detailed notifications:", error);
+        res.status(500).json("Error retrieving detailed notifications");
+    }
+};
+
+
 
 const getPaginationNotification = async (req, res) => {
     const { page } = req.query;
@@ -106,6 +165,7 @@ module.exports = {
     createNotification,
     getAllNotification,
     getListNotification,
+    getListDetailNotification,
     getPaginationNotification,
     updateNotification,
 };
