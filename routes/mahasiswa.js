@@ -13,7 +13,7 @@ const router = express.Router();
 router.get("/mahasiswa", getAllMahasiswa);
 router.get("/mahasiswa/pagination", getPaginationMahasiswa);
 router.get("/mahasiswa/:id_user", getMahasiswabyUserId);
-router.get("/mahasiswa/:id_mahasiswa", getMahasiswaByIdMahasiswa);
+router.get("/mahasiswa/mhsid/:id_mahasiswa", getMahasiswaByIdMahasiswa);
 router.post("/mahasiswa/create", createMahasiswa);
 router.patch("/mahasiswa/:id", updateMahasiswa);
 

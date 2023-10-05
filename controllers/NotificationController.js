@@ -36,16 +36,15 @@ const getListNotification = async (req, res) => {
         return res.status(404).json({ error: "User not found" });
     }
 
-
     try {
         let notifications = []
         const getNotif = await Notification.findAll({
             where: { id_user_to: id_user },
-            attributes: ['id_user_from', [Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'numberOfNotifs']],
-            group: ['id_user_from'],
-            order: [[Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'DESC']]
+            // attributes: ['id_user_from', [Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'numberOfNotifs']],
+            // group: ['id_user_from'],
+            // order: [[Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'DESC']]
         });
-
+        console.log(getNotif.dataValues);
 
         if (dataUser.role == 'mahasiswa') {
             const notificationsByMahasiswa = await Notification.findAll({
@@ -55,11 +54,7 @@ const getListNotification = async (req, res) => {
                 order: [[Notification.sequelize.fn('COUNT', Notification.sequelize.col('id_user_from')), 'DESC']]
             });
         }
-        if (getNotif && getNotif.length > 0) {
-            console.log('halo', getNotif[0].dataValues);
-        } else {
-            console.log('test');
-        }
+
 
         res.json({
             item: notifications

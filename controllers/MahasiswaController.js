@@ -223,7 +223,7 @@ const getMahasiswaByIdMahasiswa = async (req, res) => {
     const { id_mahasiswa } = req.params;
     try {
         const mahasiswaData = await Mahasiswa.findOne({
-            where: { id_mahasiswa: id_mahasiswa },
+            where: { id: id_mahasiswa },
         });
 
         if (!mahasiswaData) {
