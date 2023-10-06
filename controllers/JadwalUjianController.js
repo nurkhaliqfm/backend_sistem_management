@@ -1,6 +1,7 @@
 const JadwalUjian = require("../models/JadwalUjianModel.js");
 const Dosen = require("../models/DosenModel.js");
 const Mahasiswa = require("../models/MahasiswaModel.js");
+const PengajuanProposal = require("../models/PengajuanProposalModel.js")
 
 const createJadwalUjian = async (req, res) => {
     const jadwalUjianData = req.body;
@@ -43,8 +44,6 @@ const createJadwalUjian = async (req, res) => {
     }
 };
 
-
-
 const getAllJadwalUjian = async (req, res) => {
     try {
         const jadwalUjianData = await JadwalUjian.findAll();
@@ -55,7 +54,9 @@ const getAllJadwalUjian = async (req, res) => {
     }
 };
 
+const getJadwalUjianByIds = async (req, res) => {
 
+}
 
 const updateJadwalUjian = async (req, res) => {
     const jadwalUjianData = req.body;

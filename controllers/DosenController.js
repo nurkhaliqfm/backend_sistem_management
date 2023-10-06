@@ -62,6 +62,31 @@ const getDosenByUserId = async (req, res) => {
     }
 };
 
+const getDosenByIdDosen = async (req, res) => {
+    const { id_dosen } = req.params;
+    try {
+        const dosenData = await Dosen.findOne({
+            where: { id: id_dosen }
+        });
+
+        if (!dosenData) {
+            return res.status(404).json({ error: "Dosen tidak ditemukan" });
+        }
+
+        const data = {
+            id: dosenData.id,
+            nama_dosen: dosenData.nama_dosen,
+            nip: dosenData.nip,
+            nidn: dosenData.nidn,
+            dosen_type: dosenData.dosen_type,
+        }
+        res.json(data)
+    } catch (error) {
+        console.error("Error saat mengambil data dosen berdasarkan id dosen:", error);
+        res.status(500).json({ error: "Error saat mengambil data dosen berdasarkan id dosen" });
+    }
+}
+
 const getPaginationDosen = async (req, res) => {
     const { page, search } = req.query;
 
@@ -123,6 +148,7 @@ module.exports = {
     createDosen,
     getAllDosen,
     getDosenByUserId,
+    getDosenByIdDosen,
     getPaginationDosen,
     updateDosen,
 };
