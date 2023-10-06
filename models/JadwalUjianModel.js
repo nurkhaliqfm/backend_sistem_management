@@ -10,6 +10,14 @@ const JadwalUjian = db.define(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        id_prodi: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        id_dosen: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
         type: {
             type: DataTypes.STRING,
             allowNull: false,
