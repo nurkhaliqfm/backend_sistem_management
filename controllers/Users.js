@@ -48,6 +48,23 @@ const Register = async (req, res) => {
   }
 };
 
+const UpdatePassword = async (req, res) => {
+  const getAllUser = await Users.findAll({
+    where: { role: 'admin' },
+  })
+
+  getAllUser.forEach(async (element, id) => {
+    console.log(element.username);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(element.username, salt);
+
+    const newPassword = await Users.update({
+      id_prodi: id + 206
+    }, { where: { id: element.id } })
+  });
+  res.status(200).send('done');
+}
+
 const Login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -139,4 +156,4 @@ const Logout = async (req, res) => {
   return res.status(200).json({ msg: "Berhasil logout." });
 };
 
-module.exports = { getUsers, Login, Logout, Register };
+module.exports = { getUsers, Login, Logout, Register, UpdatePassword };

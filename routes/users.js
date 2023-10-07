@@ -4,6 +4,7 @@ const {
     getUsers,
     Logout,
     Register,
+    UpdatePassword,
 } = require("../controllers/Users.js");
 const { verifyToken } = require("../middleware/VerifyToken.js");
 const { refreshToken } = require("../controllers/RefreshToken.js");
@@ -13,6 +14,7 @@ const router = express.Router();
 router.get("/user", verifyToken, getUsers);
 router.post("/login", Login);
 router.post("/register", Register);
+router.patch("/update-password", UpdatePassword);
 router.get("/token", refreshToken);
 router.delete("/logout", Logout);
 

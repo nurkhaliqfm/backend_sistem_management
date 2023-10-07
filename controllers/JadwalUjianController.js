@@ -1,7 +1,8 @@
 const JadwalUjian = require("../models/JadwalUjianModel.js");
 const Dosen = require("../models/DosenModel.js");
 const Mahasiswa = require("../models/MahasiswaModel.js");
-const PengajuanProposal = require("../models/PengajuanProposalModel.js")
+const User = require("../models/UserModel.js");
+const PengajuanProposal = require("../models/PengajuanProposalModel.js");
 
 const createJadwalUjian = async (req, res) => {
     const jadwalUjianData = req.body;
@@ -55,8 +56,62 @@ const getAllJadwalUjian = async (req, res) => {
 };
 
 const getJadwalUjianByIds = async (req, res) => {
+    const { id_user } = req.params;
 
-}
+    const dataUser = await User.findByPk(id_user);
+    if (!dataUser) {
+        return res.status(400).json({ error: "User not found" });
+    }
+
+    const role = dataUser.role;
+    let whereConditions = {};
+    let jadwalUjianData = [];
+    let pengajuanProposalDataList = [];
+
+    try {
+        if (role === 'admin') {
+            const groupingCondition = {
+                attributes: ['id_mahasiswa', [JadwalUjian.sequelize.fn('COUNT', JadwalUjian.sequelize.col('id_mahasiswa')), 'jumlah_ujian']],
+                group: ['id_mahasiswa'],
+                where: { id_prodi: dataUser.id_prodi }
+            };
+            jadwalUjianData = await JadwalUjian.findAll(groupingCondition);
+        } else if (role === 'mahasiswa') {
+            const dataMahasiswa = await Mahasiswa.findOne({ where: { id_user: id_user } });
+            if (!dataMahasiswa) {
+                return res.status(400).json({ error: "Mahasiswa not found" });
+            }
+
+            whereConditions.id_mahasiswa = dataMahasiswa.id;
+            jadwalUjianData = await JadwalUjian.findAll({
+                where: whereConditions,
+                attributes: ['id_mahasiswa', [JadwalUjian.sequelize.fn('COUNT', JadwalUjian.sequelize.col('id_mahasiswa')), 'jumlah_ujian']],
+                group: ['id_mahasiswa']
+            });
+
+        } else if (role === 'dosen') {
+            const dataDosen = await Dosen.findOne({ where: { id_user: id_user } });
+            whereConditions.id_dosen = dataDosen.id;
+            jadwalUjianData = await JadwalUjian.findAll({ where: whereConditions });
+        } else {
+            return res.status(403).json({ error: "Akses ditolak" });
+        }
+
+        for (const data of jadwalUjianData) {
+            const pengajuanProposalData = await PengajuanProposal.findOne({ where: { id_mahasiswa: data.id_mahasiswa } });
+            pengajuanProposalDataList.push(pengajuanProposalData);
+        }
+
+        res.json({
+            jadwalUjian: jadwalUjianData,
+            pengajuanProposal: pengajuanProposalDataList
+        });
+
+    } catch (error) {
+        console.error("Error saat mengambil jadwal ujian dan pengajuan proposal:", error);
+        res.status(500).json("Error saat mengambil jadwal ujian dan pengajuan proposal");
+    }
+};
 
 const updateJadwalUjian = async (req, res) => {
     const jadwalUjianData = req.body;
@@ -77,5 +132,6 @@ const updateJadwalUjian = async (req, res) => {
 module.exports = {
     createJadwalUjian,
     getAllJadwalUjian,
+    getJadwalUjianByIds,
     updateJadwalUjian,
 };

@@ -7,6 +7,10 @@ const { DataTypes } = Sequelize;
 const Users = db.define(
   "users",
   {
+    id_prodi: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
