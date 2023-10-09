@@ -15,10 +15,10 @@ const getUsers = async (req, res) => {
 
 const Register = async (req, res) => {
   try {
-    const { username, password, role } = req.body;
+    const { username, password, role, id_prodi } = req.body;
 
-    if (!username || !password || !role) {
-      return res.status(400).json({ msg: "Username dan password diperlukan." });
+    if (!username || !password || !role || !id_prodi) {
+      return res.status(400).json({ msg: "Username, password, role, dan id_prodi diperlukan." });
     }
 
     const existingUser = await Users.findOne({
@@ -39,6 +39,7 @@ const Register = async (req, res) => {
       username: username,
       password: hashedPassword,
       role: role,
+      id_prodi: id_prodi,
     });
 
     return res.status(201).json({ msg: "Pengguna berhasil didaftarkan." });

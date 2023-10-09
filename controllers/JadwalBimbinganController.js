@@ -53,6 +53,9 @@ const getJadwalBimbinganPending = async (req, res) => {
         };
     } else {
         const dataMahasiswa = await Mahasiswa.findOne({ where: { id_user: dataUser.id } });
+        if (!dataMahasiswa) {
+            return res.status(404).json({ error: "Mahasiswa not found" });
+        }
         whereConditions = {
             id_mahasiswa: dataMahasiswa.id,
             status: 0
@@ -96,6 +99,9 @@ const getPaginationJadwalBimbingan = async (req, res) => {
         };
     } else {
         const dataMahasiswa = await Mahasiswa.findOne({ where: { id_user: dataUser.id } })
+        if (!dataMahasiswa) {
+            return res.status(404).json({ error: "Mahasiswa not found" });
+        }
         whereConditions = {
             id_mahasiswa: dataMahasiswa.id,
             status: status ? parseInt(status, 10) : 1
