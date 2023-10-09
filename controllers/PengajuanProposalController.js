@@ -169,8 +169,8 @@ const getPaginationProposalPending = async (req, res) => {
             items: modifiedProposalData,
             page: pageNumber,
             per_page: pageSize,
-            totalItems: totalCount,
-            totalPages: Math.ceil(totalCount / pageSize),
+            total_items: totalCount,
+            total_pages: Math.ceil(totalCount / pageSize),
         });
     } catch (error) {
         console.error("Error retrieving paginated Pengajuan Proposal with status 0:", error);
