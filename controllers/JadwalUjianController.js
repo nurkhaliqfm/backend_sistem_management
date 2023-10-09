@@ -113,21 +113,61 @@ const getJadwalUjianByIds = async (req, res) => {
     }
 };
 
+// const updateJadwalUjian = async (req, res) => {
+//     const jadwalUjianData = req.body;
+
+//     try {
+//         await JadwalUjian.update(jadwalUjianData, {
+//             where: {
+//                 id: req.params.id,
+//             },
+//         });
+//         res.json("Data jadwal berhasil di-update.");
+//     } catch (error) {
+//         console.error("Error updating jadwal:", error);
+//         res.status(500).json("Error updating jadwal");
+//     }
+// };
+
 const updateJadwalUjian = async (req, res) => {
+    const { id_mahasiswa } = req.params;
     const jadwalUjianData = req.body;
 
     try {
-        await JadwalUjian.update(jadwalUjianData, {
-            where: {
-                id: req.params.id,
-            },
-        });
-        res.json("Data jadwal berhasil di-update.");
+        if (jadwalUjianData.pembimbing && jadwalUjianData.pembimbingLama) {
+            const pembimbingIds = jadwalUjianData.pembimbing.split("|");
+            const pembimbingLamaIds = jadwalUjianData.pembimbingLama.split("|");
+
+            await Promise.all(pembimbingLamaIds.map(async (id_dosen_lama, index) => {
+                const id_dosen_baru = pembimbingIds[index];
+                const existingData = await JadwalUjian.findOne({ where: { id_mahasiswa, id_dosen: id_dosen_lama } });
+                if (existingData) {
+                    await JadwalUjian.update({ id_dosen: id_dosen_baru, ...jadwalUjianData }, { where: { id_mahasiswa, id_dosen: id_dosen_lama } });
+                }
+            }));
+        }
+
+        if (jadwalUjianData.penguji && jadwalUjianData.pengujiLama) {
+            const pengujiIds = jadwalUjianData.penguji.split("|");
+            const pengujiLamaIds = jadwalUjianData.pengujiLama.split("|");
+
+            await Promise.all(pengujiLamaIds.map(async (id_dosen_lama, index) => {
+                const id_dosen_baru = pengujiIds[index];
+                const existingData = await JadwalUjian.findOne({ where: { id_mahasiswa, id_dosen: id_dosen_lama } });
+                if (existingData) {
+                    await JadwalUjian.update({ id_dosen: id_dosen_baru, ...jadwalUjianData }, { where: { id_mahasiswa, id_dosen: id_dosen_lama } });
+                }
+            }));
+        }
+
+        res.json("Data jadwal ujian berhasil di-update.");
+
     } catch (error) {
-        console.error("Error updating jadwal:", error);
-        res.status(500).json("Error updating jadwal");
+        console.error("Error saat memperbarui jadwal ujian:", error);
+        res.status(500).json("Error saat memperbarui jadwal ujian.");
     }
 };
+
 
 module.exports = {
     createJadwalUjian,

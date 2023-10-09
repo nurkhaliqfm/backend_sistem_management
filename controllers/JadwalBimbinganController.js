@@ -118,8 +118,8 @@ const getPaginationJadwalBimbingan = async (req, res) => {
             item: jadwalBimbinganData,
             page: pageNumber,
             per_page: pageSize,
-            totalItems: totalCount,
-            totalPages: Math.ceil(totalCount / pageSize),
+            total_items: totalCount,
+            total_pages: Math.ceil(totalCount / pageSize),
         });
     } catch (error) {
         console.error("Error retrieving paginated jadwal bimbingan:", error);

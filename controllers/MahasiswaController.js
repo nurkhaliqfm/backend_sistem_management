@@ -275,7 +275,42 @@ const getMahasiswaByIdMahasiswa = async (req, res) => {
     }
 };
 
+//request dri fernand
+const searchingDosenByIdDosen = async (req, res) => {
+    const { id_dosen } = req.params;
+    const { role } = req.query;
 
+    try {
+        const conditions = {
+            [Op.or]: [
+                { pembimbing: { [Op.like]: `%${id_dosen}%` } },
+                { penguji: { [Op.like]: `%${id_dosen}%` } }
+            ]
+        };
+
+        if (role && (role === 'pembimbing' || role === 'penguji')) {
+            conditions[role] = { [Op.like]: `%${id_dosen}%` };
+        }
+
+        const mahasiswaData = await Mahasiswa.findAll({ where: conditions });
+
+        const modifiedMahasiswaData = mahasiswaData.map((mahasiswa) => {
+            let dosenPembimbing = mahasiswa.pembimbing.split("|");
+            let dosenPenguji = mahasiswa.penguji.split("|");
+
+            return {
+                ...mahasiswa.dataValues,
+                pembimbing: dosenPembimbing,
+                penguji: dosenPenguji
+            };
+        });
+
+        res.json(modifiedMahasiswaData);
+    } catch (error) {
+        console.error("Error saat mencari mahasiswa berdasarkan id_dosen:", error);
+        res.status(500).json({ error: "Error saat mencari mahasiswa berdasarkan id_dosen" });
+    }
+};
 
 const updateMahasiswa = async (req, res) => {
     const mahasiswaData = req.body;
@@ -298,6 +333,7 @@ module.exports = {
     getAllMahasiswa,
     getMahasiswabyUserId,
     getMahasiswaByIdMahasiswa,
+    searchingDosenByIdDosen,
     getPaginationMahasiswa,
     updateMahasiswa
 };

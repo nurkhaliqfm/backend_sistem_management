@@ -119,8 +119,8 @@ const getPaginationDosen = async (req, res) => {
             page: pageNumber,
             per_page: pageSize,
             limit: pageSize,
-            totalItems: totalCount,
-            totalPages: Math.ceil(totalCount / pageSize),
+            total_items: totalCount,
+            total_pages: Math.ceil(totalCount / pageSize),
         });
     } catch (error) {
         console.error("Error retrieving paginated dosen:", error);
