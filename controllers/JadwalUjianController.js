@@ -55,6 +55,8 @@ const getAllJadwalUjian = async (req, res) => {
     }
 };
 
+
+//request dari fernand
 const getJadwalUjianByIds = async (req, res) => {
     const { id_user } = req.params;
 
@@ -64,43 +66,50 @@ const getJadwalUjianByIds = async (req, res) => {
     }
 
     const role = dataUser.role;
-    let whereConditions = {};
     let jadwalUjianData = [];
     let pengajuanProposalDataList = [];
 
     try {
         if (role === 'admin') {
-            const groupingCondition = {
-                attributes: ['id_mahasiswa', [JadwalUjian.sequelize.fn('COUNT', JadwalUjian.sequelize.col('id_mahasiswa')), 'jumlah_ujian']],
+            jadwalUjianData = await JadwalUjian.findAll({
+                attributes: ['id_mahasiswa', [JadwalUjian.sequelize.fn('COUNT', JadwalUjian.sequelize.col('id_mahasiswa')), 'jumlah_dosen']],
                 group: ['id_mahasiswa'],
                 where: { id_prodi: dataUser.id_prodi }
-            };
-            jadwalUjianData = await JadwalUjian.findAll(groupingCondition);
+            });
         } else if (role === 'mahasiswa') {
-            const dataMahasiswa = await Mahasiswa.findOne({ where: { id_user: id_user } });
+            const dataMahasiswa = await Mahasiswa.findOne({ where: { id_user } });
             if (!dataMahasiswa) {
                 return res.status(400).json({ error: "Mahasiswa not found" });
             }
-
-            whereConditions.id_mahasiswa = dataMahasiswa.id;
             jadwalUjianData = await JadwalUjian.findAll({
-                where: whereConditions,
-                attributes: ['id_mahasiswa', [JadwalUjian.sequelize.fn('COUNT', JadwalUjian.sequelize.col('id_mahasiswa')), 'jumlah_ujian']],
+                where: { id_mahasiswa: dataMahasiswa.id },
+                attributes: ['id_mahasiswa', [JadwalUjian.sequelize.fn('COUNT', JadwalUjian.sequelize.col('id_mahasiswa')), 'jumlah_dosen']],
                 group: ['id_mahasiswa']
             });
-
         } else if (role === 'dosen') {
-            const dataDosen = await Dosen.findOne({ where: { id_user: id_user } });
-            whereConditions.id_dosen = dataDosen.id;
-            jadwalUjianData = await JadwalUjian.findAll({ where: whereConditions });
+            const dataDosen = await Dosen.findOne({ where: { id_user } });
+            jadwalUjianData = await JadwalUjian.findAll({ where: { id_dosen: dataDosen.id } });
         } else {
             return res.status(403).json({ error: "Akses ditolak" });
         }
 
-        for (const data of jadwalUjianData) {
+        const results = await Promise.all(jadwalUjianData.map(async data => {
             const pengajuanProposalData = await PengajuanProposal.findOne({ where: { id_mahasiswa: data.id_mahasiswa } });
-            pengajuanProposalDataList.push(pengajuanProposalData);
-        }
+            const allDosen = await JadwalUjian.findAll({ where: { id_mahasiswa: data.id_mahasiswa }, attributes: ['id_dosen'] });
+
+            data.setDataValue('dosen_pembimbing', allDosen.slice(0, 2).map(d => d.id_dosen).join('|'));
+            data.setDataValue('dosen_penguji', allDosen.slice(2).map(d => d.id_dosen).join('|'));
+
+            const selectedJadwalUjian = await JadwalUjian.findOne({ where: { id_mahasiswa: data.id_mahasiswa } });
+            if (selectedJadwalUjian) {
+                data.setDataValue('type', selectedJadwalUjian.type);
+                data.setDataValue('jadwal', selectedJadwalUjian.jadwal);
+            }
+
+            return pengajuanProposalData;
+        }));
+
+        pengajuanProposalDataList = results;
 
         res.json({
             jadwalUjian: jadwalUjianData,

@@ -20,6 +20,8 @@ const dosenRouter = require('./routes/dosen.js');
 const jadwalBimbinganRouter = require('./routes/jadwalbimbingan.js');
 const notificationRouter = require('./routes/notification.js');
 const jadwalUjianRouter = require('./routes/jadwalujian.js');
+const documentLogbook = require("./routes/documentlogbook.js");
+
 const getDocument = require('./routes/getDocument.js');
 const getBimbingan = require('./routes/getBimbingan.js');
 
@@ -55,7 +57,7 @@ app.use(dosenRouter);
 app.use(jadwalBimbinganRouter);
 app.use(notificationRouter);
 app.use(jadwalUjianRouter);
-
+app.use(documentLogbook);
 
 app.use(getDocument);
 app.use(getBimbingan);
