@@ -55,10 +55,20 @@ const getAllJadwalUjian = async (req, res) => {
     }
 };
 
+//kerjakan
+getMahasiswaByIdProdi = async (req, res) => {
+
+}
+
 
 //request dari fernand
 const getJadwalUjianByIds = async (req, res) => {
     const { id_user } = req.params;
+
+    const pageNumber = parseInt(page, 10) || 1;
+    const pageSize = 5;
+    const startIndex = (pageNumber - 1) * pageSize;
+
 
     const dataUser = await User.findByPk(id_user);
     if (!dataUser) {
