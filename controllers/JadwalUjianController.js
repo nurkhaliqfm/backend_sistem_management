@@ -57,7 +57,14 @@ const getAllJadwalUjian = async (req, res) => {
 
 //kerjakan
 getMahasiswaByIdProdi = async (req, res) => {
+    const { id_prodi } = req.params;
 
+    try {
+
+    } catch (error) {
+        console.error("Error retrieving mahasiswa by user Id Prodi:", error);
+        res.status(500).json("Error retrieving mahasiswa by user Id Prodi");
+    }
 }
 
 
