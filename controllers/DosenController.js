@@ -5,12 +5,13 @@ const { Op } = require('sequelize');
 
 const createDosen = async (req, res) => {
     const dosenData = req.body;
-    //create user juga
+
     try {
         const newUser = await User.create({
             username: dosenData.username,
             password: dosenData.password,
             role: 'dosen',
+            id_prodi: dosenData.id_prodi
         });
         await Dosen.create({
             nama_dosen: dosenData.nama_dosen,
@@ -21,7 +22,9 @@ const createDosen = async (req, res) => {
             id_prodi: dosenData.id_prodi,
             id_user: newUser.id,
         });
+
         res.json("success");
+
     } catch (error) {
         console.error("Error creating dosen:", error);
         res.status(500).json("Error creating dosen");

@@ -55,18 +55,23 @@ const getAllJadwalUjian = async (req, res) => {
     }
 };
 
-//kerjakan
-getMahasiswaByIdProdi = async (req, res) => {
+//yang di kerjakan
+const getMahasiswaByIdProdi = async (req, res) => {
     const { id_prodi } = req.params;
 
     try {
+        const mahasiswaList = await Mahasiswa.findAll({ where: { id_prodi } });
 
+        if (!mahasiswaList.length) {
+            return res.status(404).json({ error: "Tidak ada mahasiswa yang terdaftar di prodi ini." });
+        }
+
+        res.json(mahasiswaList);
     } catch (error) {
-        console.error("Error retrieving mahasiswa by user Id Prodi:", error);
-        res.status(500).json("Error retrieving mahasiswa by user Id Prodi");
+        console.error("Error retrieving mahasiswa by Id Prodi:", error.message);
+        res.status(500).json("Error retrieving mahasiswa by Id Prodi");
     }
 }
-
 
 //request dari fernand
 const getJadwalUjianByIds = async (req, res) => {
@@ -213,6 +218,7 @@ const updateJadwalUjian = async (req, res) => {
 module.exports = {
     createJadwalUjian,
     getAllJadwalUjian,
+    getMahasiswaByIdProdi,
     getJadwalUjianByIds,
     updateJadwalUjian,
 };
