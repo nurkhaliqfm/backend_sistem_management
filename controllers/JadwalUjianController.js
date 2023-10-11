@@ -93,12 +93,39 @@ const getJadwalUjianByIds = async (req, res) => {
             return res.status(403).json({ error: "Akses ditolak" });
         }
 
-        const results = await Promise.all(jadwalUjianData.map(async data => {
+
+        const results = await Promise.all(jadwalUjianData.map(async (data) => {
             const pengajuanProposalData = await PengajuanProposal.findOne({ where: { id_mahasiswa: data.id_mahasiswa } });
             const allDosen = await JadwalUjian.findAll({ where: { id_mahasiswa: data.id_mahasiswa }, attributes: ['id_dosen'] });
 
-            data.setDataValue('dosen_pembimbing', allDosen.slice(0, 2).map(d => d.id_dosen).join('|'));
-            data.setDataValue('dosen_penguji', allDosen.slice(2).map(d => d.id_dosen).join('|'));
+            const dosenPembimbingJoin = allDosen.slice(0, 2).map(d => d.id_dosen).join('|');
+            const dosenPengujiJoin = allDosen.slice(2).map(d => d.id_dosen).join('|');
+            let dosenPembimbing = [];
+            let dosenPenguji = [];
+            await Promise.all(
+                dosenPembimbingJoin.split("|").map(async (id_dosen) => {
+                    const bodyData = await Dosen.findByPk(id_dosen);
+                    if (bodyData) {
+                        dosenPembimbing.push(bodyData.dataValues.nama_dosen);
+                    }
+                })
+            );
+            await Promise.all(
+                dosenPengujiJoin.split("|").map(async (id_dosen) => {
+                    const bodyData = await Dosen.findByPk(id_dosen);
+                    if (bodyData) {
+                        dosenPenguji.push(bodyData.dataValues.nama_dosen);
+                    }
+                })
+            );
+
+            if (dosenPembimbing) {
+                data.setDataValue('dosen_pembimbing', dosenPembimbing);
+            }
+
+            if (dosenPenguji) {
+                data.setDataValue('dosen_penguji', dosenPenguji);
+            }
 
             const selectedJadwalUjian = await JadwalUjian.findOne({ where: { id_mahasiswa: data.id_mahasiswa } });
             if (selectedJadwalUjian) {
@@ -110,7 +137,6 @@ const getJadwalUjianByIds = async (req, res) => {
         }));
 
         pengajuanProposalDataList = results;
-
         res.json({
             jadwalUjian: jadwalUjianData,
             pengajuanProposal: pengajuanProposalDataList

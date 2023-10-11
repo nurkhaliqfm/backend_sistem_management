@@ -22,9 +22,66 @@ const createDocumentLogbook = async (req, res) => {
 }
 
 const getDocumentLogbookById = async (req, res) => {
+    const { id } = req.params;
 
-}
+    try {
+        const documentLogbookData = await DocumentLogbook.findOne({ where: { id: id } });
+
+        if (!documentLogbookData) {
+            return res.status(404).json({ message: "Document logbook not found" });
+        }
+        const formattedResponse = {
+            content: {
+                text: documentLogbookData.annotation_content
+            }
+        }
+
+        res.json(formattedResponse);
+    } catch (error) {
+        console.error("Error getting document logbook by ID:", error);
+        res.status(500).json({ message: "Error getting document logbook" });
+    }
+};
 
 module.exports = {
     createDocumentLogbook,
-}
+    getDocumentLogbookById
+};
+
+
+
+
+
+
+// const formattedResponse = {
+//     content: {
+//         text: logbook.annotation_content
+//     },
+//     position: {
+//         boundingRect: {
+//             x1: parseFloat(logbook.annotation_bounding.split(",")[0]),
+//             y1: parseFloat(logbook.annotation_bounding.split(",")[1]),
+//             x2: parseFloat(logbook.annotation_bounding.split(",")[2]),
+//             y2: parseFloat(logbook.annotation_bounding.split(",")[3]),
+//             width: 809.9999999999999,
+//             height: 1200,
+//         },
+//         rects: [
+//             {
+//                 x1: parseFloat(logbook.annotation_rect.split(",")[0]),
+//                 y1: parseFloat(logbook.annotation_rect.split(",")[1]),
+//                 x2: parseFloat(logbook.annotation_rect.split(",")[2]),
+//                 y2: parseFloat(logbook.annotation_rect.split(",")[3]),
+//                 width: 809.9999999999999,
+//                 height: 1200,
+//             }
+//         ],
+//         pageNumber: logbook.annotation_page
+//     },
+//     comment: {
+//         text: logbook.annotation_comment
+//     },
+//     id: logbook.id.toString()
+// };
+
+// res.json(formattedResponse);
