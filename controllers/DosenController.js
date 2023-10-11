@@ -1,12 +1,17 @@
 const Dosen = require("../models/DosenModel.js");
 const Prodi = require("../models/ProdiModel.js");
+const User = require("../models/UserModel.js");
 const { Op } = require('sequelize');
-
 
 const createDosen = async (req, res) => {
     const dosenData = req.body;
-
+    //create user juga
     try {
+        const newUser = await User.create({
+            username: dosenData.username,
+            password: dosenData.password,
+            role: 'dosen',
+        });
         await Dosen.create({
             nama_dosen: dosenData.nama_dosen,
             nip: dosenData.nip,
@@ -14,7 +19,7 @@ const createDosen = async (req, res) => {
             dosen_type: dosenData.dosen_type,
             dosen_profile: dosenData.dosen_profile,
             id_prodi: dosenData.id_prodi,
-            id_user: dosenData.id_user,
+            id_user: newUser.id,
         });
         res.json("success");
     } catch (error) {
