@@ -121,7 +121,8 @@ const getJadwalUjianByIds = async (req, res) => {
 
         const results = await Promise.all(jadwalUjianData.map(async (data) => {
             const pengajuanProposalData = await PengajuanProposal.findOne({ where: { id_mahasiswa: data.id_mahasiswa } });
-            const allDosen = await JadwalUjian.findAll({ where: { id_mahasiswa: data.id_mahasiswa }, attributes: ['id_dosen'] });
+
+            const allDosen = await JadwalUjian.findAll({ where: { id_mahasiswa: data.id_mahasiswa }, attributes: ['id_dosen', 'id_prodi'] });
 
             const dosenPembimbingJoin = allDosen.slice(0, 2).map(d => d.id_dosen).join('|');
             const dosenPengujiJoin = allDosen.slice(2).map(d => d.id_dosen).join('|');
@@ -158,10 +159,12 @@ const getJadwalUjianByIds = async (req, res) => {
             if (selectedJadwalUjian) {
                 data.setDataValue('type', selectedJadwalUjian.type);
                 data.setDataValue('jadwal', selectedJadwalUjian.jadwal);
+                data.setDataValue('id_prodi', selectedJadwalUjian.id_prodi);
             }
 
             return pengajuanProposalData;
         }));
+
 
         pengajuanProposalDataList = results;
 
