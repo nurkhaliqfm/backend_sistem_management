@@ -13,6 +13,24 @@ const getUsers = async (req, res) => {
   }
 };
 
+const getUsersById = async (req, res) => {
+  try {
+    const users = await Users.findOne(
+      {
+        where: {
+          id: req.params.id,
+        },
+      },
+      {
+        attributes: ["id", "username", "role"],
+      }
+    );
+    res.json(users);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const Register = async (req, res) => {
   try {
     const { username, password, role, id_prodi } = req.body;
@@ -144,4 +162,4 @@ const Logout = async (req, res) => {
   return res.status(200).json({ msg: "Berhasil logout." });
 };
 
-module.exports = { getUsers, Login, Logout, Register };
+module.exports = { getUsers, Login, Logout, Register, getUsersById };
