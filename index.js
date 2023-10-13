@@ -2,7 +2,9 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const db = require("./config/Database.js");
-const cors = require('cors');
+const cors = require("cors");
+const credentials = require("./middleware/credentials");
+const corsOptions = require("./config/corsOptions");
 
 // const Users = require("./models/UserModel.js");
 // const Dosen = require("./models/DosenModel.js");
@@ -16,39 +18,41 @@ const cors = require('cors');
 const userRouter = require("./routes/users.js");
 const mahasiswaRouter = require("./routes/mahasiswa.js");
 const proposalRouter = require("./routes/pengajuanproposal.js");
-const dosenRouter = require('./routes/dosen.js');
-const jadwalBimbinganRouter = require('./routes/jadwalbimbingan.js');
-const notificationRouter = require('./routes/notification.js');
-const jadwalUjianRouter = require('./routes/jadwalujian.js');
+const dosenRouter = require("./routes/dosen.js");
+const jadwalBimbinganRouter = require("./routes/jadwalbimbingan.js");
+const notificationRouter = require("./routes/notification.js");
+const jadwalUjianRouter = require("./routes/jadwalujian.js");
 const documentLogbook = require("./routes/documentlogbook.js");
 
-const getDocument = require('./routes/getDocument.js');
-const getBimbingan = require('./routes/getBimbingan.js');
+const getDocument = require("./routes/getDocument.js");
+const getBimbingan = require("./routes/getBimbingan.js");
 
 dotenv.config();
 
 const app = express();
 
 (async () => {
-    try {
-        await db.authenticate();
-        console.log("Database Connected");
-        // await Users.sync();
-        // await Dosen.sync();
-        // await Mahasiswa.sync();
-        // await PengajuanProposal.sync();
-        // await JadwalBimbingan.sync();
-        // await Notification.sync();
-        // await JadwalUjian.sync();
-        // await DocumentLogbook.sync();
-    } catch (error) {
-        console.log(error);
-    }
+  try {
+    await db.authenticate();
+    console.log("Database Connected");
+    // await Users.sync();
+    // await Dosen.sync();
+    // await Mahasiswa.sync();
+    // await PengajuanProposal.sync();
+    // await JadwalBimbingan.sync();
+    // await Notification.sync();
+    // await JadwalUjian.sync();
+    // await DocumentLogbook.sync();
+  } catch (error) {
+    console.log(error);
+  }
 })();
 
-app.use(cookieParser());
+app.use(credentials);
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser());
+app.use(cors(corsOptions));
 
 app.use(userRouter);
 app.use(mahasiswaRouter);
@@ -62,7 +66,6 @@ app.use(documentLogbook);
 app.use(getDocument);
 app.use(getBimbingan);
 
-
 app.listen(5000, () => {
-    console.log("Server up and running on port 5000");
+  console.log("Server up and running on port 5000");
 });

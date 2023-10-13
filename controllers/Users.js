@@ -18,7 +18,9 @@ const Register = async (req, res) => {
     const { username, password, role, id_prodi } = req.body;
 
     if (!username || !password || !role || !id_prodi) {
-      return res.status(400).json({ msg: "Username, password, role, dan id_prodi diperlukan." });
+      return res
+        .status(400)
+        .json({ msg: "Username, password, role, dan id_prodi diperlukan." });
     }
 
     const existingUser = await Users.findOne({
@@ -102,10 +104,12 @@ const Login = async (req, res) => {
 
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
+      sameSite: "None",
+      secure: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    return res.status(200).json({ accessToken, refreshToken });
+    return res.status(200).json({ accessToken });
   } catch (error) {
     console.error("Error saat proses login:", error);
     return res.status(500).json({ msg: "Terjadi kesalahan saat login" });
