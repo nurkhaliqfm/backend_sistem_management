@@ -187,35 +187,21 @@ const getJadwalUjianByIds = async (req, res) => {
 
 const updateJadwalUjian = async (req, res) => {
     const { id_mahasiswa } = req.params;
-    const jadwalUjianData = req.body;
-
-    const updateDosen = async (lamaIds, baruIds) => {
-        return Promise.all(lamaIds.map(async (id_dosen_lama, index) => {
-            const id_dosen_baru = baruIds[index];
-            if (id_dosen_lama !== id_dosen_baru) {
-                const existingData = await JadwalUjian.findOne({ where: { id_mahasiswa, id_dosen: id_dosen_lama } });
-                if (existingData) {
-                    await existingData.update({ ...jadwalUjianData, id_dosen: id_dosen_baru });
-                }
-            }
-        }));
-    };
+    const { type, jadwal } = req.body;
 
     try {
-        if (jadwalUjianData.pembimbing && jadwalUjianData.pembimbingLama) {
-            await updateDosen(jadwalUjianData.pembimbingLama.split("|"), jadwalUjianData.pembimbing.split("|"));
-        }
-
-        if (jadwalUjianData.penguji && jadwalUjianData.pengujiLama) {
-            await updateDosen(jadwalUjianData.pengujiLama.split("|"), jadwalUjianData.penguji.split("|"));
-        }
+        await JadwalUjian.update(
+            { type, jadwal },
+            { where: { id_mahasiswa } }
+        );
 
         res.json("Data jadwal ujian berhasil di-update.");
     } catch (error) {
-        console.error("Error saat memperbarui jadwal ujian:", error);
-        res.status(500).json("Error saat memperbarui jadwal ujian.");
+        console.error("Error updating mahasiswa:", error);
+        res.status(500).json("Error updating mahasiswa");
     }
 };
+
 
 
 module.exports = {

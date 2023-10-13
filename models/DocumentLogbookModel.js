@@ -6,6 +6,10 @@ const { DataTypes } = Sequelize;
 const DocumentLogbook = db.define(
     "document_logbook",
     {
+        id_document: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
         id_mahasiswa: {
             type: DataTypes.INTEGER,
             allowNull: false,

@@ -11,6 +11,7 @@ const createDocumentLogbook = async (req, res) => {
             annotation_bounding: documentLogbookData.annotation_bounding,
             annotation_rect: documentLogbookData.annotation_rect,
             annotation_comment: documentLogbookData.annotation_comment,
+            id_document: documentLogbookData.id_document,
             id_mahasiswa: documentLogbookData.id_mahasiswa,
             id_dosen: documentLogbookData.id_dosen,
             id_jadwal_bimbingan: documentLogbookData.id_jadwal_bimbingan
@@ -52,7 +53,7 @@ const getDocumentLogbookById = async (req, res) => {
                         y2: parseFloat(logbook.annotation_rect.split(",")[3]),
                         width: 809.9999999999999,
                         height: 1200,
-                    }
+                    },
                 ],
                 pageNumber: logbook.annotation_page
             },
